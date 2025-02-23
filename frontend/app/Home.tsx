@@ -1,15 +1,27 @@
-import Excercises from '../components/Excercises';
-import HeroBanner from '../components/HeroBanner';
-import SearchExcercises from '../components/SearchExcercises';
+'use client';
 
-const Home = () => {
+import Exercises from '@/components/Excercises';
+import HeroBanner from '@/components/HeroBanner';
+import SearchExercises from '@/components/SearchExcercises';
+import { Exercise } from '@/types/exercise';
+import { useState } from 'react';
+
+const Home: React.FC = () => {
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [bodyPart, setBodyPart] = useState<string>('all');
+
   return (
-    <div>
+    <main className="min-h-screen">
       <HeroBanner />
-      <SearchExcercises />
-      <Excercises />
-    </div>
-  )
-}
+      <SearchExercises
+        setExercises={setExercises}
+        bodyPart={bodyPart}
+        setBodyPart={setBodyPart}
+      />
+      <Exercises
+      />
+    </main>
+  );
+};
 
-export default Home
+export default Home;

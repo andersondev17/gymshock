@@ -1,27 +1,47 @@
 // utils/fetchData.ts
-import { APIOptions } from '@/types/exercise';
+import axios from 'axios';
 
-const API_KEY = process.env.NEXT_PUBLIC_RAPID_API_KEY;
-
-if (!API_KEY) {
-    throw new Error('NEXT_PUBLIC_RAPID_API_KEY is not defined');
+interface FetchOptions {
+    method: string;
+    headers: {
+        'x-rapidapi-host': string;
+        'x-rapidapi-key': string;
+    };
 }
 
-export const exerciseOptions: APIOptions = {
+const RAPID_API_KEY = process.env.NEXT_PUBLIC_RAPID_API_KEY;
+
+if (!RAPID_API_KEY) {
+    throw new Error('RAPID_API_KEY is not defined in environment variables');
+}
+
+export const exerciseOptions: FetchOptions = {
     method: 'GET',
     headers: {
-        'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com',
-        'X-RapidAPI-Key': API_KEY,
-    },
+        'x-rapidapi-host': 'exercisedb.p.rapidapi.com',
+        'x-rapidapi-key': RAPID_API_KEY
+    }
 };
 
-export const fetchData = async <T>(url: string): Promise<T> => {
-    const response = await fetch(url, exerciseOptions);
-
-    if (!response.ok) {
-        throw new Error(`API call failed: ${response.statusText}`);
+export const youtubeOptions: FetchOptions = {
+    method: 'GET',
+    headers: {
+        'x-rapidapi-host': 'youtube-search-and-download.p.rapidapi.com',
+        'x-rapidapi-key': RAPID_API_KEY
     }
+};
 
-    const data = await response.json();
-    return data as T;
+export const fetchData = async <T>(url: string, options: FetchOptions): Promise<T> => {
+    try {
+        const response = await axios<T>({
+            method: options.method,
+            url: url,
+            headers: options.headers
+        });
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
 };

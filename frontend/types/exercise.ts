@@ -7,8 +7,11 @@ export interface Exercise {
     equipment: string;
     bodyPart: string;
     gifUrl: string;
-}
+    exercises: Exercise[];
 
+    setExercises: React.Dispatch<React.SetStateAction<Exercise[]>>;
+
+}
 export interface SearchExercisesProps {
     setExercises: (exercises: Exercise[]) => void;
     bodyPart: string;

@@ -1,10 +1,11 @@
 'use client';
 
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Exercise, SearchExercisesProps } from '@/types/exercise';
-import { fetchData } from '@/utils/fetchData';
+import { exerciseOptions, fetchData } from '@/utils/fetchData';
 import React, { useEffect, useState } from 'react';
 
 const SearchExercises: React.FC<SearchExercisesProps> = ({
@@ -13,48 +14,53 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
   setBodyPart
 }) => {
   const [search, setSearch] = useState('');
-  const [bodyParts, setBodyParts] = useState<string[]>([]);
+  const [bodyParts, setBodyParts] = useState<string[]>(['all']);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchExercisesData = async () => {
+    const fetchBodyPartsData = async () => {
       try {
         const bodyPartsData = await fetchData<string[]>(
-          'https://exercisedb.p.rapidapi.com/exercises/bodyPartList'
+          'https://exercisedb.p.rapidapi.com/exercises/bodyPartList',
+          exerciseOptions
         );
         setBodyParts(['all', ...bodyPartsData]);
-      } catch (error) {
-        console.error('Error fetching body parts:', error);
-        setBodyParts(['all']); // Fallback
+      } catch (err) {
+        setError('Failed to load body parts');
+        console.error('Error fetching body parts:', err);
       }
     };
 
-    fetchExercisesData();
+    fetchBodyPartsData();
   }, []);
 
   const handleSearch = async () => {
     if (search) {
       try {
+        setIsLoading(true);
+        setError(null);
+        
         const exercisesData = await fetchData<Exercise[]>(
-          'https://exercisedb.p.rapidapi.com/exercises'
+          'https://exercisedb.p.rapidapi.com/exercises',
+          exerciseOptions
         );
 
         const searchedExercises = exercisesData.filter(
-          (exercise) => {
-            const searchTerm = search.toLowerCase();
-            return (
-              exercise.name.toLowerCase().includes(searchTerm) ||
-              exercise.target.toLowerCase().includes(searchTerm) ||
-              exercise.equipment.toLowerCase().includes(searchTerm) ||
-              exercise.bodyPart.toLowerCase().includes(searchTerm)
-            );
-          }
+          (exercise: Exercise) => 
+            exercise.name.toLowerCase().includes(search.toLowerCase()) ||
+            exercise.target.toLowerCase().includes(search.toLowerCase()) ||
+            exercise.equipment.toLowerCase().includes(search.toLowerCase()) ||
+            exercise.bodyPart.toLowerCase().includes(search.toLowerCase())
         );
 
-        window.scrollTo({ top: 1800, left: 100, behavior: 'smooth' });
         setSearch('');
         setExercises(searchedExercises);
-      } catch (error) {
-        console.error('Error searching exercises:', error);
+      } catch (err) {
+        setError('Failed to search exercises');
+        console.error('Error searching exercises:', err);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -65,19 +71,27 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
         Awesome Exercises You <br /> Should Know
       </h2>
 
+      {error && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       <div className="relative mb-[72px]">
         <Input
           type="text"
           className="h-[76px] w-[350px] lg:w-[1170px] bg-white rounded-[40px] font-bold border-none"
           value={search}
-          onChange={(e) => setSearch(e.target.value.toLowerCase())}
+          onChange={(e) => setSearch(e.target.value)}
           placeholder="Search Exercises"
+          disabled={isLoading}
         />
-        <Button
+        <Button 
           className="search-btn absolute right-0 h-[56px] w-[80px] lg:w-[173px] bg-[#FF2625] hover:bg-[#FF2625]/90 text-white normal-case text-[14px] lg:text-[20px]"
           onClick={handleSearch}
+          disabled={isLoading}
         >
-          Search
+          {isLoading ? 'Searching...' : 'Search'}
         </Button>
       </div>
 
@@ -88,9 +102,15 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
               <Button
                 key={part}
                 variant={part === bodyPart ? "default" : "outline"}
-                className={`px-6 py-8 capitalize ${part === bodyPart ? "bg-red-600 hover:bg-red-700" : ""
-                  }`}
-                onClick={() => setBodyPart(part)}
+                className={`px-6 py-8 capitalize ${
+                  part === bodyPart ? "bg-red-600 hover:bg-red-700" : ""
+                }`}
+                onClick={() => {
+                  setBodyPart(part);
+                  window.scrollTo({ top: 1800,left: 100, behavior: 'smooth' });
+                }
+                }
+                disabled={isLoading}
               >
                 {part}
               </Button>
