@@ -1,6 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import Image from 'next/image';
 import React from 'react';
 
 interface HeroBannerProps {
@@ -9,61 +7,55 @@ interface HeroBannerProps {
 
 const HeroBanner: React.FC<HeroBannerProps> = ({ className }) => {
   return (
-    <section 
-      className={cn(
-        "relative min-h-[80vh] w-full overflow-hidden bg-background px-6 py-12 md:px-12 lg:px-20",
-        className
-      )}
-    >
-      {/* Overlay Text */}
-      <div className="absolute right-0 top-0 -z-10 text-[200px] font-bold opacity-5 hidden lg:block">
-        Exercise
-      </div>
 
-      {/* Main Content */}
-      <div className="mx-auto max-w-7xl">
-        <div className="relative z-10 flex flex-col gap-6">
-          {/* Heading Section */}
-          <span className="text-2xl font-semibold text-red-600">
-            Fitness Club
-          </span>
-          
-          <h1 className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
-            Sweat, Smile <br />
-            And Repeat
-          </h1>
+    <div className="relative h-dvh w-screen overflow-x-hidden">
+      <section className="relative flex flex-col lg:flex-row items-center justify-between py-16 px-6">
 
-          <p className="max-w-2xl text-lg text-muted-foreground md:text-xl">
-            Check out the most effective exercises personalized to you. Transform your body, transform your life.
-          </p>
-
-          {/* CTA Button */}
-          <Button 
-            size="lg"
-            className="mt-4 w-fit bg-red-600 px-8 py-6 text-lg hover:bg-red-700"
-            asChild
-          >
-            <a href="#exercises">
-              Explore Exercises
-            </a>
-          </Button>
+        {/* Overlay Text */}
+        <div className="absolute right-0 top-0 -z-10 text-[200px] font-bold opacity-5 hidden lg:block">
+          Exercise
         </div>
-      </div>
 
-      {/* Hero Image */}
-      <div className="absolute right-0 top-0 -z-10 h-full w-1/2 hidden lg:block">
-        <div className="relative h-full w-full">
-          <Image
-            src="/hero-banner.png"
-            alt="Fitness training banner"
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
+        {/* Main Content */}
+        <div className="absolute left-0 top-0 z-40 size-full">
+          <div className="mt-24 px-5 sm:px-10 gap-6">
+            {/* Heading Section */}
+            <h1 className="text-5xl lg:text-6xl font-bold tracking-tight">
+              Transform Your Body,
+              <span className="text-red-600 block">Transform Your Life</span>
+            </h1>
+
+            <p className="text-lg py-5 text-gray-600 dark:text-gray-300">
+              Check out the most effective exercises personalized to you.
+            </p>
+
+            {/* CTA Button */}
+            <div className="flex gap-4">
+              <Button size="lg" className="bg-red-600 hover:bg-red-700 ">
+                Start  Trial
+              </Button>
+              <Button size="lg" variant="outline">
+                Learn More
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+
+        {/* Hero Image */}
+       {/*  <div className="absolute right-0 top-0 -z-10 h-full w-1/2 hidden lg:block">
+          <div className="relative h-full w-full">
+            <Image
+              src="/assets/images/banner.png"
+              alt="Fitness training banner"
+              fill
+              className="object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+        </div> */}
+      </section>
+    </div>
   );
 };
 
