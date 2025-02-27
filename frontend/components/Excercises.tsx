@@ -1,64 +1,14 @@
-import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationLink,
 } from "@/components/ui/pagination";
-import type { ExerciseCardProps, ExercisesProps } from '@/types/exercise';
-import Image from 'next/image';
-import Link from 'next/link';
+import type { ExercisesProps } from '@/types/exercise';
 import { useEffect, useState } from 'react';
+import ExerciseCard from './ui/ExerciseCard';
 
-const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
-  const [imageError, setImageError] = useState(false);
 
-  return (
-    <Link 
-      href={`/exercise/${exercise.id}`} 
-      className="exercise-card bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all"
-    >
-      <div className="relative aspect-square w-full">
-        {!imageError ? (
-          <Image 
-            src={exercise.gifUrl}
-            alt={exercise.name}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover"
-            loading="lazy"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <span className="text-gray-400">Image not available</span>
-          </div>
-        )}
-      </div>
-      <div className="p-4">
-        <div className="flex gap-2 flex-wrap">
-          <Button 
-            variant="outline"
-            size="sm"
-            className="bg-red-100 text-red-800 hover:bg-red-200 capitalize text-sm"
-          >
-            {exercise.bodyPart}
-          </Button>
-          <Button 
-            variant="outline"
-            size="sm"
-            className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200 capitalize text-sm"
-          >
-            {exercise.target}
-          </Button>
-        </div>
-        <h3 className="mt-3 text-xl font-bold capitalize line-clamp-2">
-          {exercise.name}
-        </h3>
-      </div>
-    </Link>
-  );
-};
 const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -123,6 +73,9 @@ const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
           </span>
         )}
       </h2>
+
+      <p className="text-gray-600 mb-8">Found {exercises.length} exercises</p>
+
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentExercises.map((exercise) => (
