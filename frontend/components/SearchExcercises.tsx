@@ -6,18 +6,22 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Exercise, SearchExercisesProps } from '@/types/exercise';
 import { exerciseOptions, fetchData } from '@/utils/fetchData';
+import { Search } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import BlurFadeText from './magicui/blur-fade-text';
 
 const SearchExercises: React.FC<SearchExercisesProps> = ({
   setExercises,
   bodyPart,
   setBodyPart
 }) => {
+  // Estado
   const [search, setSearch] = useState('');
   const [bodyParts, setBodyParts] = useState<string[]>(['all']);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Cargar categorías de partes del cuerpo al iniciar
   useEffect(() => {
     const fetchBodyPartsData = async () => {
       try {
@@ -25,7 +29,10 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
           'https://exercisedb.p.rapidapi.com/exercises/bodyPartList',
           exerciseOptions
         );
-        setBodyParts(['all', ...bodyPartsData]);
+        
+        if (bodyPartsData?.length) {
+          setBodyParts(['all', ...bodyPartsData]);
+        }
       } catch (err) {
         setError('Failed to load body parts');
         console.error('Error fetching body parts:', err);
@@ -35,91 +42,122 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
     fetchBodyPartsData();
   }, []);
 
+  // Manejar búsqueda de ejercicios
   const handleSearch = async () => {
-    if (search) {
-      try {
-        setIsLoading(true);
-        setError(null);
-        
-        const exercisesData = await fetchData<Exercise[]>(
-          'https://exercisedb.p.rapidapi.com/exercises',
-          exerciseOptions
-        );
+    if (!search.trim()) return;
+    
+    try {
+      setIsLoading(true);
+      setError(null);
 
-        const searchedExercises = exercisesData.filter(
-          (exercise: Exercise) => 
-            exercise.name.toLowerCase().includes(search.toLowerCase()) ||
-            exercise.target.toLowerCase().includes(search.toLowerCase()) ||
-            exercise.equipment.toLowerCase().includes(search.toLowerCase()) ||
-            exercise.bodyPart.toLowerCase().includes(search.toLowerCase())
-        );
+      const exercisesData = await fetchData<Exercise[]>(
+        'https://exercisedb.p.rapidapi.com/exercises',
+        exerciseOptions
+      );
 
-        setSearch('');
-        setExercises(searchedExercises);
-      } catch (err) {
-        setError('Failed to search exercises');
-        console.error('Error searching exercises:', err);
-      } finally {
-        setIsLoading(false);
-      }
+      const searchTerm = search.toLowerCase();
+      
+      const searchedExercises = exercisesData.filter(exercise => 
+        exercise.name.toLowerCase().includes(searchTerm) ||
+        exercise.target.toLowerCase().includes(searchTerm) ||
+        exercise.equipment.toLowerCase().includes(searchTerm) ||
+        exercise.bodyPart.toLowerCase().includes(searchTerm)
+      );
+
+      setSearch('');
+      setExercises(searchedExercises);
+    } catch (err) {
+      setError('Failed to search exercises');
+      console.error('Error searching exercises:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return (
-    <div className="flex flex-col items-center mt-[37px] justify-center p-5">
-      <h2 className="font-bold text-[30px] lg:text-[44px] mb-[49px] text-center">
-        Awesome Exercises You <br /> Should Know
-      </h2>
+  // Manejar tecla Enter para búsqueda
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
+  // Seleccionar categoría de parte del cuerpo
+  const handleBodyPartSelect = (part: string) => {
+    setBodyPart(part);
+    window.scrollTo({ top: 1800, left: 100, behavior: 'smooth' });
+  };
+
+  return (
+    <section className="flex flex-col items-center mt-9 justify-center px-4 md:px-0">
+      {/* Título */}
+      <BlurFadeText 
+        delay={0.3} 
+        yOffset={8}
+        className="animated-title text-3xl sm:text-5xl xl:text-6xl pb-5"
+        text="Awesome Exercises" 
+      />
+
+      {/* Mensaje de error */}
       {error && (
-        <Alert variant="destructive" className="mb-4">
+        <Alert variant="destructive" className="mb-4 max-w-md mx-auto">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      <div className="relative mb-[72px]">
+      {/* Barra de búsqueda */}
+      <div className="relative mb-16 w-full max-w-4xl">
         <Input
           type="text"
-          className="h-[76px] w-[350px] lg:w-[1170px] bg-white rounded-[40px] font-bold border-none"
+          className="h-16 md:h-[76px] pl-6 w-full bg-white rounded-[40px] font-medium text-base border-none shadow-sm"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search Exercises"
+          onKeyDown={handleKeyDown}
+          placeholder="Search Exercises, Muscle Groups, or Equipment..."
           disabled={isLoading}
         />
-        <Button 
-          className="search-btn absolute right-0 h-[56px] w-[80px] lg:w-[173px] bg-[#FF2625] hover:bg-[#FF2625]/90 text-white normal-case text-[14px] lg:text-[20px]"
+        <Button
+          className="search-btn absolute right-2 top-1/2 -translate-y-1/2 h-12 md:h-[56px] w-[80px] md:w-[173px] bg-[#FF2625] text-white"
           onClick={handleSearch}
           disabled={isLoading}
         >
-          {isLoading ? 'Searching...' : 'Search'}
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+              <span className="hidden md:inline">Searching...</span>
+            </span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <Search size={18} />
+              <span className="hidden md:inline">Search</span>
+            </span>
+          )}
         </Button>
       </div>
 
-      <div className="relative w-full p-5">
-        <ScrollArea className="w-full">
+      {/* Categorías de partes del cuerpo */}
+      <div className="relative w-full max-w-6xl">
+        <ScrollArea className="w-full bodyPart-scrollbar">
           <div className="flex space-x-4 p-4">
             {bodyParts.map((part) => (
               <Button
                 key={part}
                 variant={part === bodyPart ? "default" : "outline"}
-                className={`px-6 py-8 capitalize ${
-                  part === bodyPart ? "bg-red-600 hover:bg-red-700" : ""
+                className={`px-6 py-8 capitalize transition-all ${
+                  part === bodyPart 
+                    ? "bg-red-600 hover:bg-red-700 text-white bodyPart-card--active" 
+                    : "bodyPart-card hover:border-red-400"
                 }`}
-                onClick={() => {
-                  setBodyPart(part);
-                  window.scrollTo({ top: 1800,left: 100, behavior: 'smooth' });
-                }
-                }
+                onClick={() => handleBodyPartSelect(part)}
                 disabled={isLoading}
               >
                 {part}
               </Button>
             ))}
           </div>
-          <ScrollBar orientation="horizontal" />
+          <ScrollBar orientation="horizontal" className="h-2" />
         </ScrollArea>
       </div>
-    </div>
+    </section>
   );
 };
 

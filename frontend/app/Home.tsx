@@ -19,6 +19,9 @@ const Home: React.FC = () => {
         setBodyPart={setBodyPart}
       />
       <Exercises
+        exercises={exercises}
+        setExercises={setExercises}
+        bodyPart={bodyPart}
       />
     </main>
   );
