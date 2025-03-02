@@ -8,7 +8,7 @@ interface HeroBannerProps {
 
 const BLUR_FADE_DELAY = 0.04;
 
-const HeroBanner: React.FC<HeroBannerProps> = ({ className }) => {
+const HeroBanner: React.FC<HeroBannerProps> = () => {
   return (
 
     <div className="relative h-dvh w-full overflow-x-hidden">

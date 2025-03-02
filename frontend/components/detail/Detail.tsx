@@ -2,11 +2,17 @@
 import Image from "next/image";
 
 interface DetailProps {
-  exerciseDetail: any;
+  exerciseDetail: {
+    name: string;
+    gifUrl: string;
+    target: string;   
+    equipment: string;
+    bodyPart: string;
+  };
 }
 
 const Detail: React.FC<DetailProps> = ({ exerciseDetail }) => {
-  const { id, name, gifUrl, target, equipment, bodyPart } = exerciseDetail;
+  const {  name, gifUrl, target, equipment, bodyPart } = exerciseDetail;
   
   // Log para depuración
   console.log('GIF URL:', gifUrl);

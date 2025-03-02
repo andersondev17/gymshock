@@ -12,8 +12,7 @@ import { useEffect, useState } from "react";
 const ExerciseDetail = () => {
   const [exerciseDetail, setExerciseDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
+  const [error, setError] = useState<string | null>(null);
   // Usamos useParams para obtener el ID de la ruta
   const params = useParams();
   const id = params?.id;
@@ -22,7 +21,7 @@ const ExerciseDetail = () => {
 
     const fetchExerciseData = async () => {
       if (!id) {
-        console.error('ID not found');
+        setError('Exercise ID not found');
         setIsLoading(false);
         return;
       }
@@ -86,8 +85,8 @@ const ExerciseDetail = () => {
         </Link>
 
         <Detail exerciseDetail={exerciseDetail} />
-        <ExcerciseVideos />
-        <SimilarExcercises />
+          <ExcerciseVideos   />
+          <SimilarExcercises />
       </div>
     </div>
   );
