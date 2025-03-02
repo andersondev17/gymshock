@@ -112,7 +112,7 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Search Exercises, Muscle Groups, or Equipment..."
+          placeholder="Search Exercises, Muscle Groups..."
           disabled={isLoading}
         />
         <Button
