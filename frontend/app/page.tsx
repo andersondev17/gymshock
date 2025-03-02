@@ -2,7 +2,7 @@
 import Footer from '@/components/layout/Footer';
 import { BlurFade } from '@/components/magicui/blur-fade';
 import Navbar from '../components/layout/Navbar';
-import ExcerciseDetail from './excercise/ExcerciseDetail';
+import ExcerciseDetail from './exercise/[id]/page';
 import Home from './Home';
 
 const BLUR_FADE_DELAY = 0.04;
@@ -20,7 +20,7 @@ export default function App() {
       <section id = "excercise" className="pt-20">
 
       <BlurFade delay={BLUR_FADE_DELAY}>
-        <ExcerciseDetail />
+        <ExcerciseDetail  />
       </BlurFade>
       </section>
       

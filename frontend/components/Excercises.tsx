@@ -78,7 +78,7 @@ const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
 
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {currentExercises.map((exercise) => (
+        {currentExercises.map((exercise,id ) => (
           <ExerciseCard 
             key={exercise.id} 
             exercise={exercise} 
