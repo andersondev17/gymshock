@@ -5,10 +5,10 @@ import Image from "next/image";
 interface DetailProps {
   exerciseDetail: {
     name: string;
-    gifUrl: string;
-    target: string;
-    equipment: string;
-    bodyPart: string;
+    gifUrl?: string;
+    target?: string;
+    equipment?: string;
+    bodyPart?: string;
   };
 }
 

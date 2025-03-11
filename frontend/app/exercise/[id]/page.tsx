@@ -4,6 +4,7 @@ import Detail from "@/components/detail/Detail";
 import ExcerciseVideos from "@/components/detail/ExcerciseVideos";
 import SimilarExcercises from "@/components/detail/SimilarExcercises";
 import { Button } from "@/components/ui/button";
+import { exerciseOptions, fetchData } from "@/utils/fetchData"; // Importa la función reutilizable
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -13,12 +14,10 @@ const ExerciseDetail = () => {
   const [exerciseDetail, setExerciseDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Usamos useParams para obtener el ID de la ruta
   const params = useParams();
   const id = params?.id;
 
   useEffect(() => {
-
     const fetchExerciseData = async () => {
       if (!id) {
         setError('Exercise ID not found');
@@ -28,24 +27,15 @@ const ExerciseDetail = () => {
 
       setIsLoading(true);
       try {
-        // Usamos la API directamente con fetch
-        const response = await fetch(`https://exercisedb.p.rapidapi.com/exercises/exercise/${id}`, {
-          method: 'GET',
-          headers: {
-            'X-RapidAPI-Key': process.env.NEXT_PUBLIC_RAPID_API_KEY || '',
-            'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error(`API responded with status: ${response.status}`);
-        }
-
-        // Obtenemos los datos y los guardamos en el estado
-        const data = await response.json();
+        // Llama a la función fetchData para obtener los detalles del ejercicio
+        const data = await fetchData(
+          `https://exercisedb.p.rapidapi.com/exercises/exercise/${id}`,
+          exerciseOptions
+        );
         console.log('Exercise data loaded:', data);
-        setExerciseDetail(data);
+        setExerciseDetail(data as any);
       } catch (err) {
+        setError('Failed to load exercise details');
         console.error('Error fetching exercise data:', err);
       } finally {
         setIsLoading(false);
@@ -85,8 +75,8 @@ const ExerciseDetail = () => {
         </Link>
 
         <Detail exerciseDetail={exerciseDetail} />
-          <ExcerciseVideos   />
-          <SimilarExcercises />
+        <ExcerciseVideos   />
+        <SimilarExcercises />
       </div>
     </div>
   );

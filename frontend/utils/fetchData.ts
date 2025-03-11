@@ -31,6 +31,7 @@ export const youtubeOptions: FetchOptions = {
     }
 };
 
+
 export const fetchData = async <T>(url: string, options: FetchOptions): Promise<T> => {
     try {
         const response = await axios<T>({
@@ -38,7 +39,7 @@ export const fetchData = async <T>(url: string, options: FetchOptions): Promise<
             url: url,
             headers: options.headers
         });
-        
+
         return response.data;
     } catch (error) {
         console.error('Error fetching data:', error);

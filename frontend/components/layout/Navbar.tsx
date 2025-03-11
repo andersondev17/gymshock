@@ -74,7 +74,7 @@ const Navbar = () => {
   const scrolled = useScrollPosition(20);
 
   return (
-    <header 
+    <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm' : 'bg-transparent'
@@ -84,11 +84,12 @@ const Navbar = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <Image 
-              src="/assets/images/Logo.png" 
-              alt="GymShock Logo" 
-              width={40} 
-              height={40} 
+            <Image
+              src="/assets/images/Logo.png"
+              alt="GymShock Logo"
+              width={40}
+              height={40}
+              style={{ width: 'auto', height: 'auto' }}
               className="object-contain"
               priority
             />

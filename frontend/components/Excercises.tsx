@@ -58,7 +58,7 @@ const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
   if (!currentExercises.length) {
     return (
       <div className="text-center py-10">
-        <p className="text-lg text-gray-600">No exercises found</p>
+        <p className="text-lg text-gray-600">No exercises found 😔</p>
       </div>
     );
   }
