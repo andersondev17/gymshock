@@ -1,10 +1,15 @@
-// src/app.js
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const dbConnect = require('./database/dbConnect');
 
 const app = express();
+
+dbConnect().catch(err => {
+    console.error('Error al conectar a MongoDB:', err);
+    process.exit(1);
+});
 
 // Middleware
 app.use(cors({
@@ -14,27 +19,29 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Basic health check route
+// Rutas
+app.use('/api/exercises', require('./routes/exerciseRoutes'));
+
+// Ruta de salud
 app.get('/api/health', (req, res) => {
-    res.json({ 
+    res.json({
         status: 'ok',
-        message: 'GymShock API is running',
-        timestamp: new Date().toISOString()
+        message: 'GymShock API running'
     });
 });
 
-// Basic error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
-        status: 'error',
-        message: 'Something went wrong!'
+        success: false,
+        message: err.message || 'Error del servidor'
     });
 });
 
-const port = process.env.PORT || 3001;
-
-app.listen(port, () => {
-    console.log(`🚀 Server running on http://localhost:${port}`);
-    console.log(`🔗 Connected to frontend at ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
+    console.log(`🔗 Conectado al frontend en ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
 });
+
+module.exports = app;
