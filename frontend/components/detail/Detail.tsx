@@ -1,6 +1,7 @@
 // src/components/detail/Detail.tsx
 import { Box, Dumbbell, UserCircle2 } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 
 interface DetailProps {
   exerciseDetail: {
@@ -9,11 +10,24 @@ interface DetailProps {
     target?: string;
     equipment?: string;
     bodyPart?: string;
+    id?: string;
   };
 }
 
 const Detail: React.FC<DetailProps> = ({ exerciseDetail }) => {
-  const { name, gifUrl, target, equipment, bodyPart } = exerciseDetail;
+  const { name, gifUrl, target, equipment, bodyPart, id } = exerciseDetail;
+  const [imgError, setImgError] = useState(false);
+
+  // Imagen de respaldo
+  const fallbackImg = '/assets/images/exercise-placeholder.png';
+  
+  // Opcionalmente, podríamos intentar cargar la imagen directamente de RapidAPI
+  // si la original falla (descomentar esto si quieres usar RapidAPI como backup)
+  
+  const rapidApiGifUrl = id ? 
+    `https://exercisedb.p.rapidapi.com/exercises/exercise/${id}/gif` : 
+    fallbackImg;
+  
 
   const extraDetails = [
     {
@@ -43,22 +57,18 @@ const Detail: React.FC<DetailProps> = ({ exerciseDetail }) => {
     <div className="flex flex-col lg:flex-row gap-8 p-6 items-center">
       {/* Exercise GIF */}
       <div className="relative w-full max-w-md aspect-square overflow-hidden rounded-lg">
-        {gifUrl ? (
-          <Image
-            src={gifUrl}
-            alt={name}
-            fill
-            unoptimized
-            style={{ objectFit: 'contain' }}
-            priority
-            className="detail-image"
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <p className="text-gray-500">Image not available</p>
-          </div>
-        )}
+      <Image
+          src={imgError ? fallbackImg : (gifUrl || rapidApiGifUrl)}
+          alt={name}
+          fill
+          quality={80}
+          priority
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-contain"
+          onError={() => setImgError(true)}
+          placeholder="blur"
+          blurDataURL="/assets/images/exercise-placeholder.png"
+        />
       </div>
 
       {/* Exercise Information */}
@@ -73,8 +83,8 @@ const Detail: React.FC<DetailProps> = ({ exerciseDetail }) => {
 
         {/* Detail Items */}
         <div className="flex flex-col gap-6 mt-4">
-          {extraDetails.map((item) => (
-            <div key={item.name} className="flex items-center gap-4">
+          {extraDetails.map((item, index) => (
+            <div key={index} className="flex items-center gap-4">
               <div className={`${item.bgColor} w-16 h-16 rounded-full flex items-center justify-center`}>
                 {item.icon}
               </div>

@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
     const [imageError, setImageError] = useState(false);
+    const fallbackImage = "/assets/images/exercise-placeholder.png";
 
     return (
         <Link
@@ -25,7 +26,14 @@ const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                        <span className="text-gray-400">Image not available</span>
+                        <Image
+                            src={fallbackImage}
+                            alt={`Image not available for ${exercise.name}`}
+                            fill
+                            style={{ objectFit: 'contain' }}
+                            className="p-4"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                        />
                     </div>
                 )}
             </div>
@@ -38,11 +46,11 @@ const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
                         {exercise.target}
                     </Badge>
                 </div>
-                
+
                 <h3 className="text-lg font-bold capitalize line-clamp-2 group-hover:text-red-600 transition-colors">
                     {exercise.name}
                 </h3>
-                
+
                 <p className="mt-2 text-sm text-gray-600 capitalize">
                     Equipment: {exercise.equipment}
                 </p>

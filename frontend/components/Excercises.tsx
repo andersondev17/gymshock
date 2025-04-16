@@ -5,9 +5,9 @@ import {
   PaginationLink,
 } from "@/components/ui/pagination";
 import type { ExercisesProps } from '@/types/exercise';
-import { useEffect, useState } from 'react';
+import { getExercises, getExercisesByBodyPart } from '@/utils/fetchData';
+import { useEffect, useMemo, useState } from 'react';
 import ExerciseCard from './ui/ExerciseCard';
-
 
 const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,22 +18,17 @@ const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
     const fetchExercises = async () => {
       setLoading(true);
       try {
-        const url = bodyPart === 'all' 
-          ? 'https://exercisedb.p.rapidapi.com/exercises'
-          : `https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`;
-
-        const response = await fetch(url, {
-          headers: {
-            'X-RapidAPI-Key': process.env.NEXT_PUBLIC_RAPID_API_KEY || '',
-            'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
-          }
-        });
-
-        if (!response.ok) throw new Error('Failed to fetch');
-        const data = await response.json();
+        let data;
+        
+        if (bodyPart === 'all') {
+          data = await getExercises();
+        } else {
+          data = await getExercisesByBodyPart(bodyPart);
+        }
+        
         setExercises(data);
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error fetching exercises:', error);
       } finally {
         setLoading(false);
       }
@@ -42,10 +37,12 @@ const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
     fetchExercises();
   }, [bodyPart, setExercises]);
 
-  const currentExercises = exercises.slice(
-    (currentPage - 1) * exercisesPerPage,
-    currentPage * exercisesPerPage
-  );
+  const currentExercises = useMemo(() => {
+    return exercises.slice(
+      (currentPage - 1) * exercisesPerPage,
+      currentPage * exercisesPerPage
+    );
+  }, [exercises, currentPage]);
 
   if (loading) {
     return (
@@ -75,7 +72,6 @@ const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
       </h2>
 
       <p className="text-gray-600 mb-8">Found {exercises.length} exercises</p>
-
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {currentExercises.map((exercise) => (

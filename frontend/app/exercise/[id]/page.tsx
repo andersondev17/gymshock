@@ -4,18 +4,20 @@ import Detail from "@/components/detail/Detail";
 import ExcerciseVideos from "@/components/detail/ExcerciseVideos";
 import SimilarExcercises from "@/components/detail/SimilarExcercises";
 import { Button } from "@/components/ui/button";
-import { exerciseOptions, fetchData } from "@/utils/fetchData"; // Importa la función reutilizable
+import { Exercise } from "@/types/exercise";
+import { getExerciseById } from "@/utils/fetchData";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ExerciseDetail = () => {
-  const [exerciseDetail, setExerciseDetail] = useState(null);
+  const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const params = useParams();
-  const id = params?.id;
+  const id = params?.id as string;
+  
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -27,13 +29,9 @@ const ExerciseDetail = () => {
 
       setIsLoading(true);
       try {
-        // Llama a la función fetchData para obtener los detalles del ejercicio
-        const data = await fetchData(
-          `https://exercisedb.p.rapidapi.com/exercises/exercise/${id}`,
-          exerciseOptions
-        );
+        const data = await getExerciseById(id);
         console.log('Exercise data loaded:', data);
-        setExerciseDetail(data as any);
+        setExerciseDetail(data);
       } catch (err) {
         setError('Failed to load exercise details');
         console.error('Error fetching exercise data:', err);
@@ -68,15 +66,15 @@ const ExerciseDetail = () => {
   }
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-14">
       <div className="max-w-6xl mx-auto px-4">
         <Link href="/" className="inline-flex items-center mb-6 text-red-600 hover:underline">
           <ArrowLeft size={18} className="mr-2" /> Back to exercises
         </Link>
 
         <Detail exerciseDetail={exerciseDetail} />
-        <ExcerciseVideos   />
-        <SimilarExcercises />
+        <ExcerciseVideos name={exerciseDetail.name} />
+        <SimilarExcercises id={exerciseDetail.id} />
       </div>
     </div>
   );
