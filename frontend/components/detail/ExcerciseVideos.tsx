@@ -17,19 +17,18 @@ const ExerciseVideos = ({ name }: ExerciseVideosProps) => {
 
       try {
         setLoading(true);
-        const searchTerm = `${name} exercise`;
+        const searchTerm = `${name} exercise demonstration`;
         const youtubeSearchUrl = `https://youtube-search-and-download.p.rapidapi.com/search?query=${searchTerm}`;
         
         const videosData = await fetchData<{ contents: any[] }>(youtubeSearchUrl, youtubeOptions);
         
-        // Extract video information from the response
         const videos = videosData.contents
           ?.filter(item => item.type === 'video')
           ?.map(item => ({
             videoId: item.video.videoId,
             title: item.video.title,
-            thumbnailUrl: item.video.thumbnails[0].url,
-            channelName: item.video.author?.name || 'Unknown',
+            thumbnailUrl: item.video.thumbnails[0]?.url || '',
+            channelName: item.video.channelName || item.video.author?.name || 'Unknown',
             viewCount: item.video.viewCountText || '0 views',
           }))
           ?.slice(0, 3) || [];
@@ -44,7 +43,10 @@ const ExerciseVideos = ({ name }: ExerciseVideosProps) => {
       }
     };
 
-    fetchExerciseVideos();
+    // Evitar llamadas innecesarias a la API
+    if (name) {
+      fetchExerciseVideos();
+    }
   }, [name]);
 
   if (loading) {
@@ -52,7 +54,7 @@ const ExerciseVideos = ({ name }: ExerciseVideosProps) => {
       <div className="mt-12">
         <h3 className="text-2xl font-bold mb-6">Watch <span className="text-red-600 capitalize">{name}</span> Exercise Videos</h3>
         <div className="h-64 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-red-600" />
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-transparent border-red-600" />
         </div>
       </div>
     );
@@ -62,9 +64,11 @@ const ExerciseVideos = ({ name }: ExerciseVideosProps) => {
     return (
       <div className="mt-12">
         <h3 className="text-2xl font-bold mb-6">Watch <span className="text-red-600 capitalize">{name}</span> Exercise Videos</h3>
-        <p className="text-gray-600">
-          {error || `No videos found for ${name}. Try searching on YouTube directly.`}
-        </p>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <p className="text-gray-600">
+            {error || `No videos found for ${name}. Try searching on YouTube directly.`}
+          </p>
+        </div>
       </div>
     );
   }
@@ -76,9 +80,9 @@ const ExerciseVideos = ({ name }: ExerciseVideosProps) => {
       </h3>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {exerciseVideos.map((video, index) => (
+        {exerciseVideos.map((video) => (
           <a
-            key={index}
+            key={video.videoId}
             href={`https://www.youtube.com/watch?v=${video.videoId}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -86,7 +90,7 @@ const ExerciseVideos = ({ name }: ExerciseVideosProps) => {
           >
             <div className="relative aspect-video">
               <Image
-                src={video.thumbnailUrl}
+                src={video.thumbnailUrl || '/assets/images/video-placeholder.jpg'}
                 alt={video.title}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -100,8 +104,10 @@ const ExerciseVideos = ({ name }: ExerciseVideosProps) => {
             
             <div className="p-4">
               <h4 className="font-medium text-lg line-clamp-2 mb-2">{video.title}</h4>
-              <p className="text-sm text-gray-600 mb-1">{video.channelName}</p>
-              <p className="text-xs text-gray-500">{video.viewCount}</p>
+              <div className="flex justify-between items-center">
+                <p className="text-sm text-gray-600 truncate max-w-[70%]">{video.channelName}</p>
+                <p className="text-xs text-gray-500">{video.viewCount}</p>
+              </div>
             </div>
           </a>
         ))}

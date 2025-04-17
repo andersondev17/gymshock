@@ -11,18 +11,23 @@ const Home: React.FC = () => {
   const [bodyPart, setBodyPart] = useState<string>('all');
 
   return (
-    <main className="min-h-screen">
-      <HeroBanner />
-      <SearchExercises
-        setExercises={setExercises}
-        bodyPart={bodyPart}
-        setBodyPart={setBodyPart}
-      />
-      <Exercises
-        exercises={exercises}
-        setExercises={setExercises}
-        bodyPart={bodyPart}
-      />
+    <main className="">
+      <div id='home'>
+        <HeroBanner />
+      </div>
+
+      <div id="exercises">
+        <SearchExercises
+          setExercises={setExercises}
+          bodyPart={bodyPart}
+          setBodyPart={setBodyPart}
+        />
+        <Exercises
+          exercises={exercises}
+          setExercises={setExercises}
+          bodyPart={bodyPart}
+        />
+      </div>
     </main>
   );
 };

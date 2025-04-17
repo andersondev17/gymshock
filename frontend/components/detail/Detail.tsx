@@ -2,6 +2,7 @@
 import { Box, Dumbbell, UserCircle2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import SimpleParallax from "simple-parallax-js";
 
 interface DetailProps {
   exerciseDetail: {
@@ -57,6 +58,8 @@ const Detail: React.FC<DetailProps> = ({ exerciseDetail }) => {
     <div className="flex flex-col lg:flex-row gap-8 p-6 items-center">
       {/* Exercise GIF */}
       <div className="relative w-full max-w-md aspect-square overflow-hidden rounded-lg">
+      <SimpleParallax>
+
       <Image
           src={imgError ? fallbackImg : (gifUrl || rapidApiGifUrl)}
           alt={name}
@@ -69,6 +72,7 @@ const Detail: React.FC<DetailProps> = ({ exerciseDetail }) => {
           placeholder="blur"
           blurDataURL="/assets/images/exercise-placeholder.png"
         />
+        </SimpleParallax>
       </div>
 
       {/* Exercise Information */}

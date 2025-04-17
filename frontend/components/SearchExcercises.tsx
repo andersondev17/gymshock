@@ -16,21 +16,7 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
   bodyPart,
   setBodyPart
 }) => {
-  const {
-    searchTerm,
-    bodyParts,
-    isLoading,
-    error,
-    suggestions,
-    showSuggestions,
-    activeSuggestionIndex,
-    setSearchTerm,
-    executeSearch,
-    handleSuggestionSelect,
-    handleBodyPartSelect,
-    dismissSuggestions,
-    handleKeyNavigation
-  } = useSearchExercises(setExercises, setBodyPart);
+  const { searchTerm, bodyParts, isLoading, error, suggestions, showSuggestions, activeSuggestionIndex, setSearchTerm, executeSearch, handleSuggestionSelect, handleBodyPartSelect, dismissSuggestions,    handleKeyNavigation  } = useSearchExercises(setExercises, setBodyPart);
 
   const handleKeyEvents = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') executeSearch();
@@ -68,7 +54,7 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
           placeholder="Search Exercises, Muscle Groups..."
           disabled={isLoading}
         />
-        
+
         <Button
           aria-label={isLoading ? 'Searching exercises' : 'Search exercises'}
           className="search-btn absolute right-2 top-1/2 -translate-y-1/2 h-12 md:h-[56px] w-[80px] md:w-[173px] bg-[#FF2625] text-white"
@@ -89,7 +75,7 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
         </Button>
 
         {showSuggestions && suggestions.length > 0 && (
-          <div 
+          <div
             id="suggestions-list"
             role="listbox"
             className="absolute z-50 top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto"
@@ -99,11 +85,10 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
                 key={exercise.id}
                 role="option"
                 aria-selected={index === activeSuggestionIndex}
-                className={`px-4 py-2 cursor-pointer ${
-                  index === activeSuggestionIndex 
-                    ? 'bg-red-50' 
-                    : 'hover:bg-gray-50'
-                }`}
+                className={`px-4 py-2 cursor-pointer ${index === activeSuggestionIndex
+                  ? 'bg-red-50'
+                  : 'hover:bg-gray-50'
+                  }`}
                 ref={node => {
                   if (node && index === activeSuggestionIndex) {
                     node.scrollIntoView({ block: 'nearest' });
@@ -132,11 +117,10 @@ const SearchExercises: React.FC<SearchExercisesProps> = ({
                   key={part}
                   aria-pressed={part === bodyPart}
                   variant={part === bodyPart ? "default" : "outline"}
-                  className={`px-6 py-8 capitalize transition-all ${
-                    part === bodyPart
-                      ? "bg-red-600 hover:bg-red-700 text-white"
-                      : "hover:border-red-400"
-                  }`}
+                  className={`px-6 py-8 capitalize transition-all ${part === bodyPart
+                    ? "bg-red-600 hover:bg-red-700 text-white"
+                    : "hover:border-red-400"
+                    }`}
                   onClick={() => handleBodyPartSelect(part)}
                   disabled={isLoading}
                 >

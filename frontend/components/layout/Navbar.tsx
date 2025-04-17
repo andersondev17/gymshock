@@ -12,6 +12,7 @@ import { Menu } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const navItems = [
   { label: 'Home', href: '/' },
@@ -22,7 +23,41 @@ const navItems = [
 
 const NavLink = ({ href, label, className }: { href: string; label: string; className?: string }) => {
   const pathname = usePathname();
-  const isActive = pathname === href || (href === '/' && pathname === '/');
+  const isHashLink = href.startsWith('#');
+  const [isActive, setIsActive] = useState(false);
+  const sectionId = isHashLink ? href.substring(1) : '';
+
+  useEffect(() => {
+    if (!isHashLink) {
+      setIsActive(pathname === href);
+      return;
+    }
+
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const isHome = href === '/';
+        const otherSectionActive = document.querySelector('section[id]:not(#home):not([style*="display: none"])');
+        
+        let shouldActivate = entry.isIntersecting;
+        
+        // Priorizar secciones sobre Home
+        if (isHome) {
+          shouldActivate = !otherSectionActive && entry.isIntersecting;
+        } else {
+          shouldActivate = entry.isIntersecting && entry.intersectionRatio >= 0.2;
+        }
+
+        setIsActive(shouldActivate);
+      },
+      { threshold: 0.2, rootMargin: '-80px 0px 0px 0px' }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [pathname, href, isHashLink, sectionId]);
 
   return (
     <Link
