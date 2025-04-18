@@ -67,7 +67,7 @@ const Detail: React.FC<DetailProps> = ({ exerciseDetail }) => {
           quality={80}
           priority
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-contain"
+          className="object-cover"
           onError={() => setImgError(true)}
           placeholder="blur"
           blurDataURL="/assets/images/exercise-placeholder.png"

@@ -1,15 +1,16 @@
 'use client';
 
 import Detail from "@/components/detail/Detail";
-import ExcerciseVideos from "@/components/detail/ExcerciseVideos";
-import SimilarExcercises from "@/components/detail/SimilarExcercises";
 import { Button } from "@/components/ui/button";
 import { Exercise } from "@/types/exercise";
 import { getExerciseById } from "@/utils/fetchData";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
+
+const LazyExerciseVideos = lazy(() => import('@/components/detail/ExcerciseVideos'));
+const LazySimilarExercises = lazy(() => import('@/components/detail/SimilarExcercises'));
 
 const ExerciseDetail = () => {
   const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
@@ -73,8 +74,8 @@ const ExerciseDetail = () => {
         </Link>
 
         <Detail exerciseDetail={exerciseDetail} />
-        <ExcerciseVideos name={exerciseDetail.name} />
-        <SimilarExcercises id={exerciseDetail.id} />
+        <LazyExerciseVideos name={exerciseDetail.name} />
+        <LazySimilarExercises id={exerciseDetail.id} />
       </div>
     </div>
   );

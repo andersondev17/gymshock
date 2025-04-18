@@ -52,3 +52,7 @@ export interface ExerciseCardProps {
     exercise: Exercise;
 }
 
+export interface ExerciseVideosProps {
+    name: string;
+    bodyPart?: string;  // Añadimos bodyPart como parámetro opcional
+  }
