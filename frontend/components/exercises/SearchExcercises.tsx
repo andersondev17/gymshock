@@ -9,7 +9,7 @@ import { useSearchExercises } from '@/hooks/useSearchExercises';
 import { SearchExercisesProps } from '@/types/exercise';
 import { Search } from 'lucide-react';
 import React from 'react';
-import BlurFadeText from './magicui/blur-fade-text';
+import BlurFadeText from '../magicui/blur-fade-text';
 
 const SearchExercises: React.FC<SearchExercisesProps> = ({
   setExercises,

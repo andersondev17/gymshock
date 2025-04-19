@@ -79,7 +79,7 @@ const MobileNav = () => {
     <Sheet>
       <SheetTrigger asChild>
         <Button
-          variant="ghost"
+          variant="default"
           size="icon"
           className="md:hidden"
           aria-label="Open menu"
@@ -125,10 +125,10 @@ const Navbar = () => {
               width={40}
               height={40}
               style={{ width: 'auto', height: 'auto' }}
-              className="object-contain"
+              className="object-contain bg-white/80  rounded-s"
               priority
             />
-            <span className="hidden font-bold text-xl text-primary md:block">
+            <span className="font-bold text-xl text-primary">
               GymShock
             </span>
           </Link>

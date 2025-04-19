@@ -1,6 +1,27 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+export const getGreeting = () => {
+  const hour = new Date().getHours();
+  return hour < 12 ? 'Buenos días' : hour < 18 ? 'Buenas tardes' : 'Buenas noches';
+};
+
+export const getAvatarColor = (name: string = '') => {
+  const colors = [
+    'bg-blue-500', 'bg-green-500', 'bg-yellow-500',
+    'bg-red-500', 'bg-purple-500', 'bg-pink-500'
+  ]
+  const index = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length
+  return colors[index]
+}
+
+export const getInitials = (name: string = '') => 
+  name.split(' ')
+    .filter(Boolean)
+    .map(word => word[0]?.toUpperCase())
+    .slice(0, 2)
+    .join('') || '?'

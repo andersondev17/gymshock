@@ -2,8 +2,8 @@
 import type { ExercisesProps } from '@/types/exercise';
 import { getExercises, getExercisesByBodyPart } from '@/utils/fetchData';
 import { useEffect, useMemo, useState } from 'react';
-import ExerciseCard from './ui/ExerciseCard';
-import PaginationControls from './ui/PaginationControls';
+import ExerciseCard from '../ui/ExerciseCard';
+import PaginationControls from '../ui/PaginationControls';
 
 const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
   const [currentPage, setCurrentPage] = useState(1);
