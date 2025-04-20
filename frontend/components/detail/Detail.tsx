@@ -1,57 +1,104 @@
 // src/components/detail/Detail.tsx
+import { Box, Dumbbell, UserCircle2 } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+import SimpleParallax from "simple-parallax-js";
 
 interface DetailProps {
-  exerciseDetail: any;
+  exerciseDetail: {
+    name: string;
+    gifUrl?: string;
+    target?: string;
+    equipment?: string;
+    bodyPart?: string;
+    id?: string;
+  };
 }
 
 const Detail: React.FC<DetailProps> = ({ exerciseDetail }) => {
-  const { id, name, gifUrl, target, equipment, bodyPart } = exerciseDetail;
+  const { name, gifUrl, target, equipment, bodyPart, id } = exerciseDetail;
+  const [imgError, setImgError] = useState(false);
+
+  // Imagen de respaldo
+  const fallbackImg = '/assets/images/exercise-placeholder.png';
   
-  // Log para depuración
-  console.log('GIF URL:', gifUrl);
+  // Opcionalmente, podríamos intentar cargar la imagen directamente de RapidAPI
+  // si la original falla (descomentar esto si quieres usar RapidAPI como backup)
   
+  const rapidApiGifUrl = id ? 
+    `https://exercisedb.p.rapidapi.com/exercises/exercise/${id}/gif` : 
+    fallbackImg;
+  
+
+  const extraDetails = [
+    {
+      icon: <UserCircle2 size={24} className="text-red-500" />,
+      name: bodyPart,
+      label: "Body Part",
+      bgColor: "bg-red-100",
+      textColor: "text-red-600"
+    },
+    {
+      icon: <Box size={24} className="text-blue-500" />,
+      name: target,
+      label: "Target",
+      bgColor: "bg-blue-100",
+      textColor: "text-blue-600"
+    },
+    {
+      icon: <Dumbbell size={24} className="text-green-500" />,
+      name: equipment,
+      label: "Equipment",
+      bgColor: "bg-green-100",
+      textColor: "text-green-600"
+    },
+  ];
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md flex flex-row">
-      {/* Usamos un div contenedor con posición relativa para la imagen */}
-      <div className="relative w-full aspect-square mb-6 overflow-hidden rounded-lg bg-white">
-        {gifUrl ? (
-          // Usamos unoptimized para GIFs, ya que Next.js Image no optimiza GIFs correctamente
-          <Image
-            src={gifUrl}
-            alt={name}
-            fill
-            unoptimized
-            style={{ objectFit: 'contain' }}
-            priority
-            className="detail-image"
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <p className="text-gray-500">Image not available</p>
-          </div>
-        )}
+    <div className="flex flex-col lg:flex-row gap-8 p-6 items-center">
+      {/* Exercise GIF */}
+      <div className="relative w-full max-w-md aspect-square overflow-hidden rounded-lg">
+      <SimpleParallax>
+
+      <Image
+          src={imgError ? fallbackImg : (gifUrl || rapidApiGifUrl)}
+          alt={name}
+          fill
+          quality={80}
+          priority
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover"
+          onError={() => setImgError(true)}
+          placeholder="blur"
+          blurDataURL="/assets/images/exercise-placeholder.png"
+        />
+        </SimpleParallax>
       </div>
-      
-      
-      <div>
-        <h3 className="text-2xl font-bold mb-4 text-center">{name}</h3>
-      <div className="grid grid-cols-2 gap-4 w-full">
+
+      {/* Exercise Information */}
+      <div className="flex flex-col gap-6 max-w-xl">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold capitalize">{name}</h2>
         
-        <div className="flex flex-col items-center p-3 bg-red-100 rounded-lg">
-          <span className="font-semibold text-red-600">{target}</span>
-          <span className="text-sm text-gray-500">Target</span>
+        <p className="text-gray-700 text-lg">
+          Exercises keep you strong. <span className="capitalize">{name}</span> is one
+          of the best exercises to target your {target}. It will help you improve your
+          mood and gain energy.
+        </p>
+
+        {/* Detail Items */}
+        <div className="flex flex-col gap-6 mt-4">
+          {extraDetails.map((item, index) => (
+            <div key={index} className="flex items-center gap-4">
+              <div className={`${item.bgColor} w-16 h-16 rounded-full flex items-center justify-center`}>
+                {item.icon}
+              </div>
+              <div className="flex flex-col">
+                <span className={`${item.textColor} text-lg font-semibold capitalize`}>{item.name}</span>
+                <span className="text-sm text-gray-500">{item.label}</span>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="flex flex-col items-center p-3 bg-blue-100 rounded-lg">
-          <span className="font-semibold text-blue-600">{bodyPart}</span>
-          <span className="text-sm text-gray-500">Body Part</span>
-        </div>
-        <div className="flex flex-col items-center p-3 bg-green-100 rounded-lg col-span-2">
-          <span className="font-semibold text-green-600">{equipment}</span>
-          <span className="text-sm text-gray-500">Equipment</span>
-        </div>
-      </div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ReactNode } from "react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,25 +14,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GYM exercises ",
+  title: "GYM exercises",
   description: "Find the best exercises for your workout",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const RootLayout = ({ children }: { children: ReactNode }) =>  {
   return (
-    <html lang="en"> <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <link rel="icon" type="image/png" href="/assets/images/Logo.png" sizes="any" />
-    </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en" className="scroll-smooth">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/png" href="/assets/images/Logo.png" sizes="any" />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>
   );
 }
+export default RootLayout;

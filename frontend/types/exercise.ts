@@ -14,6 +14,18 @@ export interface SearchExercisesProps {
     bodyPart: string;
     setBodyPart: (part: string) => void;
 }
+export interface ExerciseVideosProps {
+    name: string;
+}
+
+export interface YoutubeVideo {
+    videoId: string;
+    title: string;
+    thumbnailUrl: string;
+    channelName: string;
+    viewCount: string;
+}
+
 
 export interface HorizontalScrollbarProps {
     data: string[];
@@ -30,15 +42,6 @@ export interface APIOptions {
     };
 }
 
-export interface Exercise {
-    id: string;
-    name: string;
-    target: string;
-    equipment: string;
-    bodyPart: string;
-    gifUrl: string;
-}
-
 export interface ExercisesProps {
     exercises: Exercise[];
     setExercises: (exercises: Exercise[]) => void;
@@ -48,3 +51,8 @@ export interface ExercisesProps {
 export interface ExerciseCardProps {
     exercise: Exercise;
 }
+
+export interface ExerciseVideosProps {
+    name: string;
+    bodyPart?: string;  // Añadimos bodyPart como parámetro opcional
+  }

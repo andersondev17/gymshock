@@ -16,6 +16,8 @@ const Footer = () => {
                 width={40} 
                 height={40}
                 className="object-contain"
+                style={{ width: 'auto', height: 'auto' }}
+
               />
               <span className="text-2xl font-bold text-red-500">GymShock</span>
             </Link>

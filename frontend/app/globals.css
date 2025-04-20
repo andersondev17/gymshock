@@ -21,6 +21,19 @@ body {
 html {
   scroll-behavior: smooth;
 }
+@media (min-width: 30rem) {
+  .root-layout {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 48rem) {
+  .root-layout {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
+}
 
 ::selection {
   background-color: #FF2625;
