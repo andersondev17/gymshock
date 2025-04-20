@@ -11,7 +11,7 @@ export default function HomePage() {
   const [bodyPart, setBodyPart] = useState<string>('all');
 
   return (
-    <div  >
+    <main  >
       {/* Hero Section */}
       <section id="home" className="relative min-h-screen w-screen overflow-x-hidden">
         <HeroBanner />
@@ -31,6 +31,6 @@ export default function HomePage() {
           bodyPart={bodyPart}
         />
       </section>
-    </div>
+    </main>
   );
 }
