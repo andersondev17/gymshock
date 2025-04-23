@@ -16,7 +16,7 @@ export const adminSideBarLinks = [
     },
 
 ];
- export const activityData = [
+export const activityData = [
     {
         id: 1,
         initials: "JS",
@@ -59,4 +59,32 @@ export const RecentActivity = [
     { id: 1, initials: 'JD', color: 'from-blue-600 to-blue-500', name: 'John Doe', action: 'Viewed', target: 'Deadlift' },
     { id: 2, initials: 'AS', color: 'from-green-600 to-green-500', name: 'Alice Smith', action: 'Completed', target: 'Squats' },
     { id: 3, initials: 'MB', color: 'from-purple-600 to-purple-500', name: 'Mike Brown', action: 'Started', target: 'Push-ups' },
+];
+/* main page 
+ */
+export const JOURNEY_PROPS = {
+    title: "Get Started with Your Fitness Journey",
+    subtitle: "Begin your transformation today with personalized workouts, expert guidance, and a supportive community to help you achieve your fitness goals.",
+    benefits: [
+        { text: "Access to 1300+ exercises with detailed instructions" },
+        { text: "Personalized recommendations based on your goals" },
+        { text: "Create and save custom workout routines" },
+        { text: "Join a community of 10,000+ fitness enthusiasts" }
+    ],
+    ctaPrimary: {
+        text: "Try GymShock for Free",
+        href: "/exercises"
+    },
+    ctaSecondary: {
+        text: "Explore Exercises",
+        href: "/exercises"
+    }
+};
+
+/* get started  */
+
+export const exercises = [
+    { emoji: '🏋️', name: 'Bench Press', area: 'Chest', sets: '3 sets × 12 reps' },
+    { emoji: '💪', name: 'Bicep Curls', area: 'Arms', sets: '3 sets × 12 reps' },
+    { emoji: '🦵', name: 'Squats', area: 'Legs', sets: '3 sets × 12 reps' },
 ];

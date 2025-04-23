@@ -3,7 +3,7 @@ import { Exercise } from '@/types/exercise';
 import { getBodyPartList, searchExercises } from '@/utils/fetchData';
 import { useEffect, useState } from 'react';
 
-const DEBOUNCE_DELAY = 300;
+const DEBOUNCE_DELAY = 200;
 const SUGGESTIONS_LIMIT = 5;
 
 export function useSearchExercises(
@@ -17,11 +17,35 @@ export function useSearchExercises(
     const [suggestions, setSuggestions] = useState<Exercise[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+    const [highlightResults, setHighlightResults] = useState(false);
 
+    const scrollToResults = () => {
+        
+            const exercisesSection = document.getElementById('exercises-list');
+            if (exercisesSection) {
+                const navbarHeight = 80;
+                const elementPosition = exercisesSection.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+                
+                setHighlightResults(true);
+                
+                // Desactiva el resaltado en 2 segundos
+                setTimeout(() => {
+                    setHighlightResults(false);
+                }, 2000);
+            }
+    };
+    
     const handleSuggestionSelect = (exercise: Exercise) => {
         setParentExercises([exercise]);
         setSearchTerm(exercise.name);
         setShowSuggestions(false);
+        scrollToResults();
     }
 
     // Cargar categorías de partes del cuerpo
@@ -85,7 +109,6 @@ export function useSearchExercises(
         }
     };
 
-    // Manejar búsqueda completa
     const executeSearch = async () => {
         if (!searchTerm.trim()) return;
 
@@ -96,6 +119,9 @@ export function useSearchExercises(
 
             const results = await searchExercises(searchTerm);
             setParentExercises(results);
+            
+            scrollToResults();
+            
             setSearchTerm('');
         } catch (error) {
             setError('Error searching exercises');
@@ -113,13 +139,14 @@ export function useSearchExercises(
         suggestions,
         showSuggestions,
         activeSuggestionIndex,
+        highlightResults,
         setSearchTerm,
         executeSearch,
         handleKeyNavigation,
         handleSuggestionSelect,
         handleBodyPartSelect: (part: string) => {
             setParentBodyPart(part);
-            window.scrollTo({ top: 1800, behavior: 'smooth' });
+            scrollToResults();
         },
         dismissSuggestions: () => setShowSuggestions(false),
 

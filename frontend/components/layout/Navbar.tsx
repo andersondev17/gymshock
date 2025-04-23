@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 
 const navItems = [
   { label: 'Home', href: '/' },
-  { label: 'Exercises', href: '#exercises' },
+  { label: 'Exercises', href: '/exercises' },
   { label: 'Programs', href: '/programs' },
   { label: 'Community', href: '/community' }
 ] as const;
@@ -79,7 +79,7 @@ const MobileNav = () => {
     <Sheet>
       <SheetTrigger asChild>
         <Button
-          variant="default"
+          variant="outline"
           size="icon"
           className="md:hidden"
           aria-label="Open menu"
@@ -96,7 +96,7 @@ const MobileNav = () => {
               className="text-lg px-2"
             />
           ))}
-          <Button className="mt-4 bg-red-600 hover:bg-red-700">
+          <Button variant="outline" className="mt-4 bg-red-600 hover:bg-red-700">
             Join Now
           </Button>
         </nav>

@@ -55,4 +55,23 @@ export interface ExerciseCardProps {
 export interface ExerciseVideosProps {
     name: string;
     bodyPart?: string;  // Añadimos bodyPart como parámetro opcional
-  }
+}
+
+
+interface BenefitItem {
+    text: string;
+}
+
+export interface JourneyProps {
+    title: string;
+    subtitle: string;
+    benefits: BenefitItem[];
+    ctaPrimary: {
+        text: string;
+        href: string;
+    };
+    ctaSecondary: {
+        text: string;
+        href: string;
+    };
+}
