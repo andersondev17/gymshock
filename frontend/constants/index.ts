@@ -16,6 +16,14 @@ export const adminSideBarLinks = [
     },
 
 ];
+
+export const navItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Exercises', href: '/exercises' },
+    { label: 'Programs', href: '/programs' },
+    { label: 'Community', href: '/community' }
+] as const;
+
 export const activityData = [
     {
         id: 1,

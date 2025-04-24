@@ -1,0 +1,26 @@
+# backend/.gitignore
+
+# Dependencias de Node
+node_modules/
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Archivos de lock (opcionalmente puedes trackear package-lock.json)
+# package-lock.json
+# yarn.lock
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Carpeta de build (si generas alguna)
+dist/
+build/
+
+# Sistema
+.DS_Store
+Thumbs.db

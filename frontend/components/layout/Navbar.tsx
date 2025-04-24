@@ -6,6 +6,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { navItems } from '@/constants/index';
 import { useScrollPosition } from '@/hooks/use-scroll-position';
 import { cn } from '@/lib/utils';
 import { Menu } from 'lucide-react';
@@ -14,12 +15,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const navItems = [
-  { label: 'Home', href: '/' },
-  { label: 'Exercises', href: '/exercises' },
-  { label: 'Programs', href: '/programs' },
-  { label: 'Community', href: '/community' }
-] as const;
 
 const NavLink = ({ href, label, className }: { href: string; label: string; className?: string }) => {
   const pathname = usePathname();
@@ -93,7 +88,7 @@ const MobileNav = () => {
             <NavLink
               key={item.href}
               {...item}
-              className="text-lg px-2"
+              className="text-lg px-2 relative tracking-widest group overflow-hidden transition-colors duration-300"
             />
           ))}
           <Button variant="outline" className="mt-4 bg-red-600 hover:bg-red-700">
