@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/context/AuthContext";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ReactNode } from "react";
@@ -26,7 +27,9 @@ const RootLayout = ({ children }: { children: ReactNode }) =>  {
         <link rel="icon" type="image/png" href="/assets/images/Logo.png" sizes="any" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <AuthProvider>
         {children}
+        </AuthProvider>
       </body>
     </html>
   );
