@@ -1,11 +1,14 @@
+// frontend/context/AuthContext.tsx
 'use client';
 
-import { AuthService } from '@/services/authService';
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { signIn, signOut, useSession } from "next-auth/react";
+import React, { createContext, ReactNode, useContext, useState } from 'react';
+
 type User = {
     id: string;
-    username: string;
-    email: string;
+    name?: string;
+    username?: string;
+    email?: string;
     role: string;
 };
 
@@ -23,101 +26,85 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { data: session, status } = useSession();
     const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const checkAuthStatus = async () => {
-            try {
-                setLoading(true);
-                const response = await AuthService.getCurrentUser();
-
-                if (response.success && response.user) {
-                    setUser(response.user);
-                }
-            } catch (error: any) { // Usar any para simplificar el manejo
-                console.error('Error checking auth status:', error.message || error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        checkAuthStatus();
-    }, []);
+    
+    const loading = status === "loading";
+    const user = session?.user as User | null;
+    const isAdmin = user?.role === "admin";
 
     const login = async (username: string, password: string) => {
         try {
-            setLoading(true);
             setError(null);
-
-            const response = await AuthService.login({ username, password });
-
-            if (!response.success) {
-                setError(response.message || 'Error al iniciar sesión');
-                return { success: false, message: response.message };
+            
+            const result = await signIn("credentials", {
+                username,
+                password,
+                redirect: false,
+            });
+            
+            if (result?.error) {
+                setError(result.error);
+                return { success: false, message: result.error };
             }
-
-            if (response.user) {
-                setUser(response.user);
-            }
-
+            
             return { success: true };
-        } catch (error: any) { // Usar any para simplificar el manejo
+        } catch (error: any) {
             const errorMsg = error.message || 'Error al conectar con el servidor';
             setError(errorMsg);
             return { success: false, message: errorMsg };
-        } finally {
-            setLoading(false);
         }
     };
 
     const register = async (username: string, email: string, password: string) => {
         try {
-            setLoading(true);
             setError(null);
-
-            const response = await AuthService.register({ username, email, password });
-
-            if (!response.success) {
-                setError(response.message || 'Error al registrarse');
-                return { success: false, message: response.message };
+            
+            // Llamada a nuestro servicio de registro y luego iniciamos sesión
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password }),
+            });
+            
+            const data = await response.json();
+            
+            if (!data.success) {
+                setError(data.message || 'Error al registrarse');
+                return { success: false, message: data.message };
             }
-
-            if (response.user) {
-                setUser(response.user);
-            }
-
-            return { success: true };
-        } catch (error: any) { // Usar any para simplificar el manejo
+            
+            // Si el registro fue exitoso, iniciamos sesión
+            const loginResult = await login(username, password);
+            return loginResult;
+        } catch (error: any) {
             const errorMsg = error.message || 'Error al conectar con el servidor';
             setError(errorMsg);
             return { success: false, message: errorMsg };
-        } finally {
-            setLoading(false);
         }
     };
 
     const logout = async () => {
         try {
-            setLoading(true);
-            await AuthService.logout();
-            setUser(null);
-        } catch (error: any) { // Usar any para simplificar el manejo
+            await signOut({ redirect: false });
+        } catch (error: any) {
             console.error('Error logging out:', error.message || error);
-        } finally {
-            setLoading(false);
         }
     };
 
     const clearError = () => setError(null);
 
-    const isAdmin = user?.role === 'admin';
-
     return (
         <AuthContext.Provider
             value={{
-                user, loading, login, register, logout, error, clearError, isAdmin
+                user,
+                loading,
+                login,
+                register,
+                logout,
+                error,
+                clearError,
+                isAdmin
             }}
         >
             {children}

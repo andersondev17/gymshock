@@ -1,107 +1,28 @@
 'use client';
 
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { navItems } from '@/constants/index';
+import { useAuth } from '@/context/AuthContext';
 import { useScrollPosition } from '@/hooks/use-scroll-position';
-import { cn } from '@/lib/utils';
-import { Menu } from 'lucide-react';
+import { cn, getInitials } from '@/lib/utils';
+import { LogOut, Settings, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
-
-
-const NavLink = ({ href, label, className }: { href: string; label: string; className?: string }) => {
-  const pathname = usePathname();
-  const isHashLink = href.startsWith('#');
-  const [isActive, setIsActive] = useState(false);
-  const sectionId = isHashLink ? href.substring(1) : '';
-
-  useEffect(() => {
-    if (!isHashLink) {
-      setIsActive(pathname === href);
-      return;
-    }
-
-    const section = document.getElementById(sectionId);
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const isHome = href === '/';
-        const otherSectionActive = document.querySelector('section[id]:not(#home):not([style*="display: none"])');
-        
-        let shouldActivate = entry.isIntersecting;
-        
-        // Priorizar secciones sobre Home
-        if (isHome) {
-          shouldActivate = !otherSectionActive && entry.isIntersecting;
-        } else {
-          shouldActivate = entry.isIntersecting && entry.intersectionRatio >= 0.2;
-        }
-
-        setIsActive(shouldActivate);
-      },
-      { threshold: 0.2, rootMargin: '-80px 0px 0px 0px' }
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, [pathname, href, isHashLink, sectionId]);
-
-  return (
-    <Link
-      href={href}
-      className={cn(
-        'text-sm font-medium transition-colors hover:text-primary relative py-2',
-        isActive && 'text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-red-500',
-        !isActive && 'text-muted-foreground',
-        className
-      )}
-    >
-      {label}
-    </Link>
-  );
-};
-
-const MobileNav = () => {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          className="md:hidden"
-          aria-label="Open menu"
-        >
-          <Menu className="h-6 w-6" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-        <nav className="flex flex-col gap-4">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.href}
-              {...item}
-              className="text-lg px-2 relative tracking-widest group overflow-hidden transition-colors duration-300"
-            />
-          ))}
-          <Button variant="outline" className="mt-4 bg-red-600 hover:bg-red-700">
-            Join Now
-          </Button>
-        </nav>
-      </SheetContent>
-    </Sheet>
-  );
-};
+import { useRouter } from 'next/navigation';
+import MobileNav from './MobileNav';
+import NavLink from './NavLink';
 
 const Navbar = () => {
   const scrolled = useScrollPosition(20);
+  const { user, logout, isAdmin } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/');
+  };
 
   return (
     <header
@@ -120,7 +41,7 @@ const Navbar = () => {
               width={40}
               height={40}
               style={{ width: 'auto', height: 'auto' }}
-              className="object-contain bg-white/80  rounded-s"
+              className="object-contain bg-white/80 rounded-s"
               priority
             />
             <span className="font-bold text-xl text-primary">
@@ -133,9 +54,49 @@ const Navbar = () => {
             {navItems.map((item) => (
               <NavLink key={item.href} {...item} />
             ))}
-            <Button size="sm" className="bg-red-600 hover:bg-red-700">
-              Join Now
-            </Button>
+            
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="h-9 w-9 cursor-pointer hover:ring-2 hover:ring-red-500 transition-all">
+                    <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-600 text-white font-medium">
+                      {getInitials(user.name || user.username || "")}
+                    </AvatarFallback>
+                    <span className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-white" />
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[220px] rounded-xl shadow-lg">
+                  <div className="px-4 py-3 mb-1 border-b">
+                    <p className="text-sm font-medium">{user.name || user.username}</p>
+                    <p className="text-xs text-muted-foreground">{user.role === 'admin' ? 'Administrador' : 'Usuario'}</p>
+                  </div>
+                  
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/profile')}>
+                    <User size={16} className="mr-2" />
+                    Mi Perfil
+                  </DropdownMenuItem>
+
+                  {isAdmin && (
+                    <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/admin')}>
+                      <Settings size={16} className="mr-2" />
+                      Panel de Admin
+                    </DropdownMenuItem>
+                  )}
+
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer text-red-500" onClick={handleLogout}>
+                    <LogOut size={16} className="mr-2" />
+                    Cerrar Sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link href="/login">
+                <Button size="sm" className="bg-red-600 hover:bg-red-700">
+                  Join Now
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Navigation */}

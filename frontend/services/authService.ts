@@ -28,18 +28,31 @@ const handleServiceError = (error: unknown): AuthResponse => {
 }
 
 export const AuthService = {
-    login: async (credentials: { username: string; password: string }) => {
+    login: async (credentials: { username: string | {}; password: string | {} }) => {
         try {
-            const { data } = await apiClient.post<AuthResponse>('/auth/login', credentials);
+            // Validar y convertir los valores a strings seguros
+            const safeCredentials = {
+                username: typeof credentials.username === 'string' ? credentials.username : '',
+                password: typeof credentials.password === 'string' ? credentials.password : ''
+            };
+            
+            const { data } = await apiClient.post<AuthResponse>('/auth/login', safeCredentials);
             return data;
         } catch (error) {
             return handleServiceError(error);
         }
     },
 
-    register: async (userData: { username: string; email: string; password: string }) => {
+    register: async (userData: { username: string | {}; email: string | {}; password: string | {} }) => {
         try {
-            const { data } = await apiClient.post<AuthResponse>('/auth/register', userData);
+            // Validar y convertir los valores a strings seguros
+            const safeUserData = {
+                username: typeof userData.username === 'string' ? userData.username : '',
+                email: typeof userData.email === 'string' ? userData.email : '',
+                password: typeof userData.password === 'string' ? userData.password : ''
+            };
+            
+            const { data } = await apiClient.post<AuthResponse>('/auth/register', safeUserData);
             return data;
         } catch (error) {
             return handleServiceError(error);

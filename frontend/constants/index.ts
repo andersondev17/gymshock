@@ -96,3 +96,17 @@ export const exercises = [
     { emoji: '💪', name: 'Bicep Curls', area: 'Arms', sets: '3 sets × 12 reps' },
     { emoji: '🦵', name: 'Squats', area: 'Legs', sets: '3 sets × 12 reps' },
 ];
+
+export const FIELD_NAMES = {
+    username: "Usuario",
+    email: "Email",
+    password: "Contraseña",
+    role: "Tipo de Usuario"
+};
+
+export const FIELD_TYPES = {
+    username: "text",
+    email: "email",
+    password: "password"
+};
+

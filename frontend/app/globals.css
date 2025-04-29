@@ -301,3 +301,29 @@ html {
     @apply font-bold tracking-tight;
   }
 }
+
+/* auth */
+.auth-input:focus {
+  @apply outline-none ring-2 ring-red-500 ring-opacity-50;
+}
+
+/* Transiciones y animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+/* Mejora del gradiente de fondo */
+.auth-gradient {
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+}

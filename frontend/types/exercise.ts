@@ -7,15 +7,20 @@ export interface Exercise {
     equipment: string;
     bodyPart: string;
     gifUrl: string;
-    exercises: Exercise[];
+    secondaryMuscles?: string[];
+    instructions?: string[];
 }
+
 export interface SearchExercisesProps {
     setExercises: (exercises: Exercise[]) => void;
     bodyPart: string;
     setBodyPart: (part: string) => void;
 }
+
+
 export interface ExerciseVideosProps {
     name: string;
+    bodyPart?: string;
 }
 
 export interface YoutubeVideo {
@@ -25,7 +30,6 @@ export interface YoutubeVideo {
     channelName: string;
     viewCount: string;
 }
-
 
 export interface HorizontalScrollbarProps {
     data: string[];
@@ -42,6 +46,7 @@ export interface APIOptions {
     };
 }
 
+
 export interface ExercisesProps {
     exercises: Exercise[];
     setExercises: (exercises: Exercise[]) => void;
@@ -52,13 +57,7 @@ export interface ExerciseCardProps {
     exercise: Exercise;
 }
 
-export interface ExerciseVideosProps {
-    name: string;
-    bodyPart?: string;  // Añadimos bodyPart como parámetro opcional
-}
-
-
-interface BenefitItem {
+export interface BenefitItem {
     text: string;
 }
 
