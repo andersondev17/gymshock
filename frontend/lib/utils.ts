@@ -19,7 +19,7 @@ export const getAvatarColor = (name: string = '') => {
   return colors[index]
 }
 
-export const getInitials = (name: string = '') => 
+export const getInitials = (name: string = '') =>
   name.split(' ')
     .filter(Boolean)
     .map(word => word[0]?.toUpperCase())

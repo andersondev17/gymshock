@@ -1,112 +1,112 @@
-// components/ui/PaginationControls.tsx
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious
-} from "@/components/ui/pagination";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PaginationControlsProps {
     currentPage: number;
     totalPages: number;
     onPageChange: (page: number) => void;
-    className?: string;
-    maxVisiblePages?: number;
+    maxPageButtons?: number;
 }
 
-const PaginationControls = ({
-    currentPage,
-    totalPages,
-    onPageChange,
-    className = "",
-    maxVisiblePages = 5
-}: PaginationControlsProps) => {
-    // No pagination needed if only one page
-    if (totalPages <= 1) return null;
+const PaginationControls = ({ currentPage, totalPages, onPageChange, maxPageButtons = 5 }: PaginationControlsProps) => {
 
-    // Generate page numbers with ellipsis logic for many pages
-    const getPageNumbers = () => {
-        if (totalPages <= maxVisiblePages) {
-            // Show all pages if total is less than max visible
-            return Array.from({ length: totalPages }, (_, i) => i + 1);
+    // Logic to determine which page buttons to show
+    const getPageButtons = () => {
+        let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+        let endPage = startPage + maxPageButtons - 1;
+
+        if (endPage > totalPages) {
+            endPage = totalPages;
+            startPage = Math.max(1, endPage - maxPageButtons + 1);
         }
 
-        // Calculate visible page range with ellipsis
-        const leftSiblingIndex = Math.max(currentPage - 1, 1);
-        const rightSiblingIndex = Math.min(currentPage + 1, totalPages);
-
-        const shouldShowLeftEllipsis = leftSiblingIndex > 2;
-        const shouldShowRightEllipsis = rightSiblingIndex < totalPages - 1;
-
-        // Always show first and last pages
-        if (shouldShowLeftEllipsis && shouldShowRightEllipsis) {
-            // Show ellipsis on both sides
-            return [1, 'ellipsis-left', leftSiblingIndex, currentPage, rightSiblingIndex, 'ellipsis-right', totalPages];
+        const pages = [];
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(i);
         }
-
-        if (shouldShowLeftEllipsis) {
-            // Show ellipsis only on left
-            return [1, 'ellipsis-left', ...Array.from({ length: maxVisiblePages - 2 }, (_, i) => totalPages - (maxVisiblePages - 3) + i)];
-        }
-
-        if (shouldShowRightEllipsis) {
-            // Show ellipsis only on right
-            return [...Array.from({ length: maxVisiblePages - 2 }, (_, i) => i + 1), 'ellipsis-right', totalPages];
-        }
-
-        // Default case: show first max visible pages
-        return Array.from({ length: maxVisiblePages }, (_, i) => i + 1);
+        return pages;
     };
 
-    const pageNumbers = getPageNumbers();
+    const pageButtons = getPageButtons();
 
     return (
-        <Pagination className={className}>
-            <PaginationContent className="flex-wrap gap-1 justify-center">
+        <div className="flex justify-center items-center ">
+            <div className="inline-flex bg-white rounded-lg shadow-md p-1 border border-gray-100">
                 {/* Previous button */}
-                <PaginationItem>
-                    <PaginationPrevious
-                        onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-                        aria-disabled={currentPage === 1}
-                        className={`transition-colors ${currentPage === 1 ? 'opacity-50 pointer-events-none' : 'cursor-pointer'
-                            }`}
-                    />
-                </PaginationItem>
+                <button
+                    onClick={() => onPageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`px-3 py-2 rounded-lg mx-1 flex items-center justify-center font-medium text-sm ${currentPage === 1
+                        ? 'text-gray-300 cursor-not-allowed'
+                        : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                        }`}
+                    aria-label="Previous page"
+                >
+                    <ChevronLeft size={18} />
+                </button>
 
-                {/* Page numbers with ellipsis */}
-                {pageNumbers.map((pageNumber, i) => (
-                    pageNumber === 'ellipsis-left' || pageNumber === 'ellipsis-right' ? (
-                        <PaginationItem key={`ellipsis-${i}`}>
-                            <PaginationEllipsis />
-                        </PaginationItem>
-                    ) : (
-                        <PaginationItem key={i}>
-                            <PaginationLink
-                                onClick={() => onPageChange(pageNumber as number)}
-                                isActive={currentPage === pageNumber}
-                                className={`transition-colors hover:bg-gray-100 ${currentPage === pageNumber ? 'bg-red-500 text-white hover:bg-red-600' : ''
-                                    }`}
-                            >
-                                {pageNumber}
-                            </PaginationLink>
-                        </PaginationItem>
-                    )
+                {/* First page */}
+                {pageButtons[0] > 1 && (
+                    <>
+                        <button
+                            onClick={() => onPageChange(1)}
+                            className={`w-10 h-10 rounded-lg mx-1 flex items-center justify-center font-medium text-sm ${currentPage === 1
+                                ? 'bg-red-600 text-white'
+                                : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                                }`}
+                        >
+                            1
+                        </button>
+                        {pageButtons[0] > 2 && (
+                            <span className="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+                        )}
+                    </>
+                )}
+
+                {/* Page numbers */}
+                {pageButtons.map((page) => (
+                    <button
+                        key={page}
+                        onClick={() => onPageChange(page)}
+                        className={`w-10 h-10 rounded-lg mx-1 flex items-center justify-center font-medium text-sm transition-colors duration-300 ${currentPage === page
+                            ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md'
+                            : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                            }`}
+                    >
+                        {page}
+                    </button>
                 ))}
 
-                {/* Next button */}
-                <PaginationItem>
-                    <PaginationNext
-                        onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
-                        aria-disabled={currentPage === totalPages}
-                        className={`transition-colors ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : 'cursor-pointer'
-                            }`}
-                    />
-                </PaginationItem>
-            </PaginationContent>
-        </Pagination>
+                {/* Last page */}
+                {pageButtons[pageButtons.length - 1] < totalPages && (
+                    <>
+                        {pageButtons[pageButtons.length - 1] < totalPages - 1 && (
+                            <span className="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+                        )}
+                        <button
+                            onClick={() => onPageChange(totalPages)}
+                            className={`w-10 h-10 rounded-lg mx-1 flex items-center justify-center font-medium text-sm ${currentPage === totalPages
+                                ? 'bg-red-600 text-white'
+                                : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                                }`}
+                        >
+                            {totalPages}
+                        </button>
+                    </>
+                )}
+
+                <button
+                    onClick={() => onPageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`px-3 py-2 rounded-lg mx-1 flex items-center justify-center font-medium text-sm ${currentPage === totalPages
+                        ? 'text-gray-300 cursor-not-allowed'
+                        : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                        }`}
+                    aria-label="Next page"
+                >
+                    <ChevronRight size={18} />
+                </button>
+            </div>
+        </div>
     );
 };
 

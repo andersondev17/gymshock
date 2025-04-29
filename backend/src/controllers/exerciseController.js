@@ -101,3 +101,85 @@ exports.getSimilarExercises = asyncHandler(async (req, res) => {
 
     res.json({ success: true, count: similarExercises.length, data: similarExercises });
 });
+
+exports.createExercise = asyncHandler(async (req, res) => {
+    const exerciseData = req.body;
+    
+    // Validar datos de entrada
+    if (!exerciseData.name || !exerciseData.bodyPart || !exerciseData.target || !exerciseData.equipment) {
+        return res.status(400).json({
+            success: false,
+            message: 'Por favor proporcione todos los campos requeridos'
+        });
+    }
+    
+    // Generar ID único si no se proporciona
+    if (!exerciseData.id) {
+        // Generar ID basado en el nombre (slug)
+        exerciseData.id = exerciseData.name
+            .toLowerCase()
+            .replace(/[^\w\s]/gi, '')
+            .replace(/\s+/g, '-');
+    }
+    
+    // Crear nuevo ejercicio
+    const exercise = new Exercise(exerciseData);
+    await exercise.save();
+    
+    res.status(201).json({
+        success: true,
+        data: exercise
+    });
+});
+
+/**
+ * @desc    Actualizar un ejercicio existente
+ * @route   PUT /api/exercises/:id
+ * @access  Private (Admin)
+ */
+exports.updateExercise = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const exerciseData = req.body;
+    
+    // Encontrar y actualizar ejercicio
+    const exercise = await Exercise.findOneAndUpdate(
+        { id },
+        exerciseData,
+        { new: true, runValidators: true }
+    );
+    
+    if (!exercise) {
+        return res.status(404).json({
+            success: false,
+            message: 'Ejercicio no encontrado'
+        });
+    }
+    
+    res.json({
+        success: true,
+        data: exercise
+    });
+});
+
+/**
+ * @desc    Eliminar un ejercicio
+ * @route   DELETE /api/exercises/:id
+ * @access  Private (Admin)
+ */
+exports.deleteExercise = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    
+    const exercise = await Exercise.findOneAndDelete({ id });
+    
+    if (!exercise) {
+        return res.status(404).json({
+            success: false,
+            message: 'Ejercicio no encontrado'
+        });
+    }
+    
+    res.json({
+        success: true,
+        message: 'Ejercicio eliminado correctamente'
+    });
+});

@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { animate } from 'animejs';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import BlurFadeText from '../magicui/blur-fade-text';
 
@@ -85,15 +86,31 @@ const HeroBanner: React.FC<HeroBannerProps> = () => {
             text="Discover over 1300+ exercises tailored to your goals. Whether you're a beginner or a pro, find the perfect workout routine to push your limits."
           />
 
-          <div ref={buttonContainerRef}             className="flex flex-col sm:flex-row flex-wrap gap-4 items-start sm:items-center"
+          <div
+            ref={buttonContainerRef}
+            className="flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-center w-full"
           >
-            <Button size="lg" className="bg-red-600 hover:bg-red-700 font-medium text-lg px-6 py-4 rounded-xl shadow-lg shadow-red-600/20 w-full sm:w-auto">
-              Start Training
-            </Button>
-            <Button size="lg" variant="outline" className="border-white text-gray-900 hover:bg-white/10 font-medium text-lg px-6 py-4 rounded-xl w-full sm:w-auto">
-              Browse Exercises
-            </Button>
-            <div className="flex items-center gap-2 text-gray-300 mt-4 lg:mt-0 lg:ml-4">
+            <Link href="/exercises" className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-red-600 hover:bg-red-700 font-medium text-lg px-6 py-4 rounded-xl shadow-lg shadow-red-600/20 w-full"
+              >
+                Browse Exercises
+              </Button>
+            </Link>
+
+            <Link href="/exercises" className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-gray-900 hover:bg-white/60 font-medium text-lg px-6 py-4 rounded-xl w-full"
+              >
+                Start Training
+              </Button>
+            </Link>
+
+            <div className="flex items-center gap-2 text-gray-300 mt-4 lg:mt-0 lg:ml-4 w-full sm:w-auto">
               <div className="flex -space-x-2">
                 <div className="w-8 h-8 rounded-full bg-blue-500 border-2 border-gray-900 flex items-center justify-center text-xs font-bold">JD</div>
                 <div className="w-8 h-8 rounded-full bg-green-500 border-2 border-gray-900 flex items-center justify-center text-xs font-bold">MK</div>
