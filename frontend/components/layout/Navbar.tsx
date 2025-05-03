@@ -11,6 +11,7 @@ import { LogOut, Settings, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import AnimatedText from '../ui/animatedText';
 import MobileNav from './MobileNav';
 import NavLink from './NavLink';
 
@@ -52,9 +53,16 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-8">
             {navItems.map((item) => (
-              <NavLink key={item.href} {...item} />
+              <AnimatedText
+                key={item.href}
+                className="relative"
+                hoverColor="#ff4d4d"
+                underline
+              >
+                <NavLink {...item} />
+              </AnimatedText>
             ))}
-            
+
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -70,7 +78,7 @@ const Navbar = () => {
                     <p className="text-sm font-medium">{user.name || user.username}</p>
                     <p className="text-xs text-muted-foreground">{user.role === 'admin' ? 'Administrador' : 'Usuario'}</p>
                   </div>
-                  
+
                   <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/profile')}>
                     <User size={16} className="mr-2" />
                     Mi Perfil
@@ -93,7 +101,9 @@ const Navbar = () => {
             ) : (
               <Link href="/login">
                 <Button size="sm" className="bg-red-600 hover:bg-red-700">
-                  Join Now
+                  <AnimatedText baseColor="#ffffff" hoverColor="#ffffff">
+                    Join Now
+                  </AnimatedText>
                 </Button>
               </Link>
             )}
