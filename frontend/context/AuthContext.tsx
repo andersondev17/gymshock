@@ -1,112 +1,48 @@
-// frontend/context/AuthContext.tsx
 'use client';
 
 import { signIn, signOut, useSession } from "next-auth/react";
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 
 type User = {
     id: string;
-    name?: string;
+    role: string;
     username?: string;
     email?: string;
-    role: string;
 };
 
 interface AuthContextType {
     user: User | null;
-    loading: boolean;
-    login: (username: string, password: string) => Promise<{ success: boolean; message?: string }>;
-    register: (username: string, email: string, password: string) => Promise<{ success: boolean; message?: string }>;
-    logout: () => Promise<void>;
-    error: string | null;
-    clearError: () => void;
     isAdmin: boolean;
+    login: (username: string, password: string) => Promise<{ success: boolean }>;
+    logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const { data: session, status } = useSession();
-    const [error, setError] = useState<string | null>(null);
-    
-    const loading = status === "loading";
-    const user = session?.user as User | null;
-    const isAdmin = user?.role === "admin";
+export const AuthProvider = ({ children }: { children: ReactNode}) => {
+    const { data: session } = useSession();
 
-    const login = async (username: string, password: string) => {
-        try {
-            setError(null);
-            
-            const result = await signIn("credentials", {
-                username,
-                password,
-                redirect: false,
-            });
-            
-            if (result?.error) {
-                setError(result.error);
-                return { success: false, message: result.error };
+    const userContext = useMemo(() => {
+        const user = session?.user as User | null;
+        return {
+            user,
+            isAdmin: user?.role === "admin",
+            login: async (username: string, password: string) => {
+                const result = await signIn("credentials", {
+                    username,
+                    password,
+                    redirect: false,
+                });
+                return { success: !result?.error };
+            },
+            logout: async () => {
+                await signOut({ redirect: false });
             }
-            
-            return { success: true };
-        } catch (error: any) {
-            const errorMsg = error.message || 'Error al conectar con el servidor';
-            setError(errorMsg);
-            return { success: false, message: errorMsg };
-        }
-    };
-
-    const register = async (username: string, email: string, password: string) => {
-        try {
-            setError(null);
-            
-            // Llamada a nuestro servicio de registro y luego iniciamos sesión
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password }),
-            });
-            
-            const data = await response.json();
-            
-            if (!data.success) {
-                setError(data.message || 'Error al registrarse');
-                return { success: false, message: data.message };
-            }
-            
-            // Si el registro fue exitoso, iniciamos sesión
-            const loginResult = await login(username, password);
-            return loginResult;
-        } catch (error: any) {
-            const errorMsg = error.message || 'Error al conectar con el servidor';
-            setError(errorMsg);
-            return { success: false, message: errorMsg };
-        }
-    };
-
-    const logout = async () => {
-        try {
-            await signOut({ redirect: false });
-        } catch (error: any) {
-            console.error('Error logging out:', error.message || error);
-        }
-    };
-
-    const clearError = () => setError(null);
+        };
+    }, [session]);
 
     return (
-        <AuthContext.Provider
-            value={{
-                user,
-                loading,
-                login,
-                register,
-                logout,
-                error,
-                clearError,
-                isAdmin
-            }}
-        >
+        <AuthContext.Provider value={userContext}>
             {children}
         </AuthContext.Provider>
     );
@@ -114,8 +50,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
+    if (!context) throw new Error('useAuth must be used within AuthProvider');
     return context;
 };

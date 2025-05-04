@@ -56,21 +56,22 @@ const Detail: React.FC<DetailProps> = ({ exerciseDetail }) => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 p-6 items-center">
-      {/* Exercise GIF */}
-      <div className="relative w-full max-w-md aspect-square overflow-hidden rounded-lg">
+      <div className="relative w-full max-w-md aspect-square">
       <SimpleParallax>
 
       <Image
           src={imgError ? fallbackImg : (gifUrl || rapidApiGifUrl)}
           alt={name}
-          fill
+          width={800}
+          height={600}
           quality={80}
-          priority
+          priority={false}
+          loading="eager"
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover"
+          className="object-cover aspect-square"
+          onLoadingComplete={(img) => img.style.opacity = '1'}
           onError={() => setImgError(true)}
-          placeholder="blur"
-          blurDataURL="/assets/images/exercise-placeholder.png"
+          style={{ transition: 'opacity 0.3s', opacity: 0 }}
         />
         </SimpleParallax>
       </div>
