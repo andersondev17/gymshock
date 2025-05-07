@@ -7,13 +7,14 @@ type User = {
     id: string;
     role: string;
     username?: string;
+    name?: string;
     email?: string;
 };
 
 interface AuthContextType {
     user: User | null;
     isAdmin: boolean;
-    login: (username: string, password: string) => Promise<{ success: boolean }>;
+    login: (username: string, password: string, name?: string) => Promise<{ success: boolean }>;
     logout: () => Promise<void>;
 }
 
@@ -27,10 +28,11 @@ export const AuthProvider = ({ children }: { children: ReactNode}) => {
         return {
             user,
             isAdmin: user?.role === "admin",
-            login: async (username: string, password: string) => {
+            login: async (username: string, password: string, name?: string) => {
                 const result = await signIn("credentials", {
                     username,
                     password,
+                    name,
                     redirect: false,
                 });
                 return { success: !result?.error };

@@ -17,6 +17,7 @@ const BLUR_FADE_DELAY = 0;
 const HeroBanner: React.FC<HeroBannerProps> = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const shapesRef = useRef<HTMLDivElement>(null);
   const buttonContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,13 +46,11 @@ const HeroBanner: React.FC<HeroBannerProps> = () => {
   }, []);
 
   return (
-    <div
-      ref={heroRef}
+    <div ref={heroRef}
       className="relative w-full h-dvh overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white"
       style={{ minHeight: '700px' }}
     >
-      {/* Fondos y formas decorativas */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div ref={shapesRef} className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-[15%] w-20 h-20 rounded-full bg-red-500/20 blur-xl"></div>
         <div className="absolute top-[40%] left-[25%] w-32 h-32 rounded-full bg-blue-500/20 blur-xl"></div>
         <div className="absolute bottom-40 left-[10%] w-24 h-24 rounded-full bg-purple-500/20 blur-xl"></div>
@@ -61,7 +60,6 @@ const HeroBanner: React.FC<HeroBannerProps> = () => {
       <div className="absolute inset-0 bg-[url('/assets/images/pattern.png')] opacity-10 bg-repeat"></div>
 
       <div className="max-w-7xl mx-auto h-full px-4 sm:px-2 lg:px-5 flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-16">
-        {/* Contenido de texto */}
         <div className="z-10 w-full lg:w-1/2 pt-16 lg:pt-0">
           <div className="inline-block mb-3 px-4 py-1 rounded-full bg-red-600/20 text-red-500 font-medium text-sm">
             FITNESS REDEFINED
@@ -85,7 +83,6 @@ const HeroBanner: React.FC<HeroBannerProps> = () => {
             text="Discover over 1300+ exercises tailored to your goals. Whether you're a beginner or a pro, find the perfect workout routine to push your limits."
           />
 
-          {/* Botones principales */}
           <div
             ref={buttonContainerRef}
             className="flex flex-col sm:flex-row flex-wrap gap-4 items-stretch sm:items-center w-full"
@@ -110,14 +107,8 @@ const HeroBanner: React.FC<HeroBannerProps> = () => {
             </Link>
           </div>
 
-          {/* Join Athletes - MOBILE/TABLET BELOW BUTTONS, DESKTOP TO THE RIGHT */}
           <div
-            className="
-              order-last w-full mt-6 
-              lg:order-none lg:w-auto lg:mt-0
-              flex justify-center lg:justify-start items-center gap-2 text-gray-300
-            "
-          >
+            className="order-last w-full mt-6 lg:order-none lg:w-auto lg:mt-0 flex justify-center lg:justify-start items-center gap-2 text-gray-300 pb-16">
             <div className="flex -space-x-2">
               <div className="w-8 h-8 rounded-full bg-blue-500 border-2 border-gray-900 flex items-center justify-center text-xs font-bold">JD</div>
               <div className="w-8 h-8 rounded-full bg-green-500 border-2 border-gray-900 flex items-center justify-center text-xs font-bold">MK</div>
@@ -130,14 +121,12 @@ const HeroBanner: React.FC<HeroBannerProps> = () => {
           </div>
         </div>
 
-        {/* Imagen y estadísticas */}
         <div
           ref={imageRef}
           className="relative w-full sm:w-3/4 lg:w-1/2 opacity-0 pt-6 lg:pt-8 mb-8 lg:mb-0"
           style={{ willChange: 'transform, opacity' }}
         >
           <div className="relative w-full aspect-square max-w-md sm:max-w-lg mx-auto">
-            {/* Daily Progress */}
             <div className="absolute top-2 left-2 sm:top-0 sm:-left-6 bg-white/10 backdrop-blur-lg rounded-xl p-2 sm:p-3 shadow-xl animate-float">
               <div className="text-xs text-gray-300">Daily Progress</div>
               <div className="text-base sm:text-lg font-bold">78%</div>
@@ -146,7 +135,6 @@ const HeroBanner: React.FC<HeroBannerProps> = () => {
               </div>
             </div>
 
-            {/* Calories Burned */}
             <div className="hidden lg:block absolute bottom-2 right-2 sm:bottom-8 sm:-right-24 bg-white/10 backdrop-blur-lg rounded-xl p-2 sm:p-3 shadow-xl animate-float-delay">
               <div className="text-xs text-gray-300">Calories Burned</div>
               <div className="text-base sm:text-lg font-bold">1,248</div>
@@ -158,8 +146,6 @@ const HeroBanner: React.FC<HeroBannerProps> = () => {
           </div>
         </div>
       </div>
-
-      {/* Bottom decorative wave */}
       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-900 to-transparent" />
     </div>
   );
