@@ -17,119 +17,91 @@ import MobileNav from './MobileNav';
 import NavLink from './NavLink';
 
 const Navbar = () => {
+  const { user, logout, isAdmin } = useAuth();
+  const router = useRouter();
   const scrolled = useScrollPosition(20);
   const [compactMode, setCompactMode] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const { user, logout, isAdmin } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.scrollY;
       const scrollingDown = currentScrollPos > prevScrollPos;
 
-      if (scrollingDown && currentScrollPos > 120) {
-        setCompactMode(true);
-      } else if (!scrollingDown && compactMode) {
-        setTimeout(() => setCompactMode(false), 200);
-      }
-
+      setCompactMode(scrollingDown && currentScrollPos > 120);
       setPrevScrollPos(currentScrollPos);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [prevScrollPos, compactMode]);
+  }, [prevScrollPos]);
 
   const handleLogout = async () => {
     await logout();
     router.push('/');
   };
 
-  // Componentes compartidos para evitar duplicación
-  const UserMenu = ({ mobile = false }) => (
+  const UserMenu = ({ mobile = false }: { mobile?: boolean }) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar
-          className={cn(
-            "cursor-pointer hover:ring-2 hover:ring-red-500 transition-all",
-            mobile ? "h-8 w-8" : "h-9 w-9"
-          )}
-        >
-          <AvatarFallback className="bg-gradient-to-br from-red-500 to-red-600 text-white font-medium">
-            {getInitials(user?.name || user?.username || "")}
+        <Avatar className={cn(
+          "cursor-pointer hover:ring-4 hover:ring-light-red-500",
+          mobile ? "h-8 w-8" : "h-9 w-9"
+        )}>
+          <AvatarFallback className="bg-red-500 text-white">
+            {getInitials(user?.name || user?.username)}
           </AvatarFallback>
-          <span className="absolute bottom-0 right-0 h-2.5 w-2.5 bg-green-500 rounded-full border-2 border-white" />
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={mobile ? "center" : "end"} className="min-w-[220px] rounded-xl shadow-lg">
-        <div className="px-4 py-3 mb-1 border-b">
-          <p className="text-sm font-medium">{user?.name || user?.username}</p>
-          <p className="text-xs text-muted-foreground">{user?.role === 'admin' ? 'Administrador' : 'Usuario'}</p>
+
+      <DropdownMenuContent
+        align={mobile ? "center" : "end"}
+        className="min-w-[200px] rounded-lg"
+      >
+        <div className="px-3 py-2 border-b">
+          <p className="font-medium">{user?.name || user?.username}</p>
+          <p className="text-xs text-gray-500">{user?.role === 'admin' ? 'Admin' : 'User'}</p>
         </div>
 
-        <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/profile')}>
+        <DropdownMenuItem onClick={() => router.push('/profile')}>
           <User size={16} className="mr-2" />
-          Mi Perfil
+          Profile
         </DropdownMenuItem>
 
         {isAdmin && (
-          <DropdownMenuItem className="cursor-pointer" onClick={() => router.push('/admin')}>
+          <DropdownMenuItem onClick={() => router.push('/admin')}>
             <Settings size={16} className="mr-2" />
-            Panel de Admin
+            Admin Panel
           </DropdownMenuItem>
         )}
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer text-red-500" onClick={handleLogout}>
+        <DropdownMenuItem className="text-primary hover:bg-primary hover:text-white " onClick={handleLogout}>
           <LogOut size={16} className="mr-2" />
-          Cerrar Sesión
+          Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 
-  const LoginButton = ({ mobile = false }) => (
+  const LoginButton = ({ mobile = false }: { mobile?: boolean }) => (
     <Link href="/login">
       <Button
         size={mobile ? "default" : "sm"}
-        className={cn(
-          "bg-red-600 hover:bg-red-700 transition-all",
-          mobile && "w-full"
-        )}
+        className="bg-primary  hover:bg-primary/90 text-white font-semibold shadow-sm hover:shadow-md transition-all duration-200"
       >
-        <AnimatedText baseColor="#ffffff" hoverColor="#ffffff">
-          Join Now
-        </AnimatedText>
+        Join Now
       </Button>
     </Link>
   );
 
-  // Elementos de navegación normales
-  const NavItems = () => (
-    <>
-      {navItems.map((item) => (
-        <AnimatedText
-          key={item.href}
-          className="relative"
-          hoverColor="#ff4d4d"
-          underline
-        >
-          <NavLink {...item} />
-        </AnimatedText>
-      ))}
-    </>
-  );
-
   return (
-    <header
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent',
-        scrolled ? 'backdrop-blur-md shadow-sm bg-white/90' : '',
-      )}
-    >
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <header className={cn(
+      'fixed top-0 w-full z-50 transition-all',
+      scrolled && 'bg-white/90 backdrop-blur-md shadow-sm'
+    )}>
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 z-10">
             <div className="relative w-10 h-10 overflow-hidden rounded-md flex-shrink-0">
               <Image
@@ -145,35 +117,30 @@ const Navbar = () => {
             </span>
           </Link>
 
-          {/* Navegación Desktop */}
-          <div className="hidden md:flex md:items-center md:space-x-8">
-            {compactMode ? (
-              <div className="flex items-center gap-3">
-               
-                {user ? <UserMenu /> : <LoginButton />}
-                <MobileNav onClose={() => setCompactMode(false)} />
+          <div className="hidden md:flex items-center gap-8">
+            {!compactMode && !scrolled && (
+              <div className="flex items-center gap-6">
+                {navItems.map((item) => (
+                  <AnimatedText
+                    key={item.href}
+                    className="relative"
+                    hoverColor="#ff4d4d"
+                    underline
+                  >
+                    <NavLink {...item} />
+                  </AnimatedText>
+                ))}
               </div>
-            ) : (
-              <>
-                {/* NavItems solo visible cuando NO se ha hecho scroll */}
-                {!scrolled ? (
-                  <div className="flex items-center space-x-6">
-                    <NavItems />
-                  </div>
-                ) : null}
-                <div className="flex items-center gap-3">
-                  {user ? <UserMenu /> : <LoginButton />}
-                  {/* MobileNav visible solo cuando SE HA hecho scroll */}
-                  {scrolled && <MobileNav />}
-                </div>
-              </>
             )}
+
+            <div className="flex items-center gap-3">
+              {user ? <UserMenu /> : <LoginButton />}
+              {(compactMode || scrolled) && <MobileNav onClose={() => setCompactMode(false)} />}
+            </div>
           </div>
 
-          {/* Mobile navigation - always compact */}
           <div className="md:hidden flex items-center gap-3">
             {user ? <UserMenu mobile /> : <LoginButton mobile />}
-            {/* Solo mostrar el MobileNav cuando se ha hecho scroll */}
             {scrolled && <MobileNav onClose={() => setCompactMode(false)} />}
           </div>
         </div>
