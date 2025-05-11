@@ -1,10 +1,20 @@
 'use client';
 
-import Exercises from '@/components/exercises/Excercises';
-import SearchExercises from '@/components/exercises/SearchExcercises';
+import { ExerciseSkeleton } from '@/components/ui/ExerciseSkeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Exercise } from '@/types/exercise';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 
+const SearchExercises = dynamic(() => import('@/components/exercises/SearchExcercises'), {
+    loading: () => <Skeleton className="h-[400px] w-full" />
+});
+
+const Exercises = dynamic(() => import('@/components/exercises/Excercises'), {
+    loading: () => <div className="grid grid-cols-1 md:grid-cols-2 gap-4">{
+        Array(6).fill(0).map((_, i) => <ExerciseSkeleton key={i} />)
+    }</div>
+});
 const page = () => {
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const [bodyPart, setBodyPart] = useState<string>('all');

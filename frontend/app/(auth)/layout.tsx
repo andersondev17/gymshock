@@ -31,9 +31,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
                 <Image
                     src="/assets/images/banner.png"
                     alt="GymShock Inspiration"
-                    fill
                     className="object-cover"
                     priority
+                    fill
+                    placeholder='blur'
+                    blurDataURL="data:image/png;base64,..."
                 />
             </section>
         </main>

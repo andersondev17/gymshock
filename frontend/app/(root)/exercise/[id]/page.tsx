@@ -2,16 +2,19 @@
 
 import Detail from "@/components/detail/Detail";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Exercise } from "@/types/exercise";
 import { getExerciseById } from "@/utils/fetchData";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { lazy, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
-const LazyExerciseVideos = lazy(() => import('@/components/detail/ExcerciseVideos'));
-const LazySimilarExercises = lazy(() => import('@/components/detail/SimilarExcercises'));
-
+const LazyExerciseVideos = lazy(() => import('@/components/detail/ExcerciseVideos')
+  .then(module => ({ default: module.default })));
+  
+  const LazySimilarExercises = lazy(() => import('@/components/detail/SimilarExcercises')
+  .then(module => ({ default: module.default })));
 const ExerciseDetail = () => {
   const [exerciseDetail, setExerciseDetail] = useState<Exercise | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,9 +76,12 @@ const ExerciseDetail = () => {
           <ArrowLeft size={18} className="mr-2" /> Back to exercises
         </Link>
 
+        <Suspense fallback={<Skeleton className="h-[400px] w-full" />}>
+
         <Detail exerciseDetail={exerciseDetail} />
         <LazyExerciseVideos name={exerciseDetail.name} />
         <LazySimilarExercises id={exerciseDetail.id} />
+        </Suspense>
       </div>
     </div>
   );

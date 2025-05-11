@@ -52,8 +52,9 @@ export const searchExercises = async (term: string): Promise<Exercise[]> => {
 
 
 export const getExerciseById = async (id: string): Promise<Exercise> => {
-    const exercise = await fetchData<Exercise>(`/exercises/${id}`);
-
+    const exercise = await fetchData<Exercise>(`/exercises/${id}`, {
+        fields: 'name,gifUrl,target,equipment,bodyPart,id'
+    });
     // Fallback para gifUrl si no está presente
     return {
         ...exercise,
