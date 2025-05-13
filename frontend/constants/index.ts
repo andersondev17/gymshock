@@ -110,3 +110,34 @@ export const FIELD_TYPES = {
     password: "password"
 };
 
+export const FOOTER_CONFIG = {
+    brand: {
+        name: "GymShock",
+        tagline: "Transform your body, transform your life.",
+        logo: "/assets/images/Logo.png"
+    },
+
+    socials: [
+        { name: "Instagram", href: "https://instagram.com/gymshock" },
+        { name: "Twitter", href: "https://twitter.com/gymshock" },
+        { name: "Facebook", href: "https://facebook.com/gymshock" },
+        { name: "Youtube", href: "https://youtube.com/gymshock" }
+    ],
+
+    links: {
+        quickLinks: [
+            { text: "Exercises", href: "/exercises" },
+            { text: "Programs", href: "/programs" }
+        ],
+        support: [
+            { text: "Help", href: "/help" },
+            { text: "Contact", href: "/contact" }
+        ]
+    },
+
+    newsletter: {
+        title: "Newsletter",
+        description: "Subscribe for fitness tips",
+        placeholder: "Email"
+    }
+};

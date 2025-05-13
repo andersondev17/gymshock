@@ -1,6 +1,5 @@
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider } from "@/context/AuthProvider";
 import type { Metadata } from "next";
-import { SessionProvider } from "next-auth/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ReactNode } from "react";
 import "./globals.css";
@@ -23,7 +22,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "GYM exercises",
-  description: "Find the best exercises for your workout",
+  description: "Access 1300+ exercises and professional fitness guidance.",
+  keywords: "fitness, exercises, workout, training, gym, health",
 };
 
 const RootLayout = ({ children }: { children: ReactNode }) =>  {
@@ -34,11 +34,9 @@ const RootLayout = ({ children }: { children: ReactNode }) =>  {
         <link rel="icon" type="image/png" href="/assets/images/Logo.png" sizes="any" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SessionProvider>
         <AuthProvider>
         {children}
         </AuthProvider>
-        </SessionProvider>
       </body>
     </html>
   );

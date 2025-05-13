@@ -8,7 +8,7 @@ const asyncHandler = fn => (req, res, next) =>
  * @route   GET /api/exercises
  */
 exports.getExercises = asyncHandler(async (req, res) => {
-    const { bodyPart, equipment, target, search, page = 1, limit = 20 } = req.query;
+    const { bodyPart, equipment, target, search, page = 1} = req.query;
 
     const filter = {};
     if (bodyPart && bodyPart !== 'all') filter.bodyPart = bodyPart;
@@ -23,10 +23,9 @@ exports.getExercises = asyncHandler(async (req, res) => {
         ];
     }
 
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = (Number(page) - 1) ;
     const exercises = await Exercise.find(filter)
         .skip(skip)
-        .limit(Number(limit))
         .sort({ name: 1 });
 
     const total = await Exercise.countDocuments(filter);
@@ -36,7 +35,7 @@ exports.getExercises = asyncHandler(async (req, res) => {
         count: exercises.length,
         total,
         page: Number(page),
-        pages: Math.ceil(total / Number(limit)),
+        pages: Math.ceil(total),
         data: exercises
     });
 });

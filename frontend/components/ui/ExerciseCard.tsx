@@ -2,36 +2,21 @@
 
 import { Badge } from "@/components/ui/badge";
 import type { ExerciseCardProps } from '@/types/exercise';
-import { animate } from 'animejs';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
     const [imageError, setImageError] = useState(false);
-    const cardRef = useRef<HTMLDivElement>(null);
     const fallbackImage = "/assets/images/exercise-placeholder.png";
 
-    // Animación de entrada
-    useEffect(() => {
-        if (cardRef.current) {
-            animate(cardRef.current, {
-                opacity: [0, 1],
-                translateY: [20, 0],
-                duration: 800,
-                easing: 'easeOutExpo'
-            });
-        }
-    }, []);
-
     return (
-        <div ref={cardRef} className="opacity-0">
+        <div className="w-full h-full">
             <Link
                 href={`/exercise/${exercise.id}`}
-                className="group block h-full"
+                className="group block h-full w-full"
             >
-                <div className="bg-white  overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
-                    
+                <div className="bg-white overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col rounded-lg">
                     {/* Image container */}
                     <div className="relative aspect-square w-full overflow-hidden">
                         {!imageError ? (

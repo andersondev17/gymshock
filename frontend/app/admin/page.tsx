@@ -106,7 +106,7 @@ export default function AdminDashboard() {
       {/* Charts and Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-7 gap-6">
         <PopularExercisesChart loading={loading} />
-        <RecentActivityFeed loading={loading} />
+        <RecentActivityFeed  />
       </div>
     </div>
   );

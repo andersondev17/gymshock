@@ -1,7 +1,7 @@
 "use client";
 
 import { adminSideBarLinks } from "@/constants";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/lib/utils";
 import { Dumbbell } from "lucide-react";
 import Image from "next/image";
