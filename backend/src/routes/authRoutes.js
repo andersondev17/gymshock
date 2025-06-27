@@ -35,7 +35,7 @@ router.get('/google/callback',
     }),
     (req, res) => {
         console.log('✅ Google OAuth callback successful:', req.user?.email);
-        res.redirect(process.env.FRONTEND_URL || 'http://localhost:3000');
+        res.redirect(process.env.FRONTEND_URL);
     }
 );
 
@@ -47,8 +47,8 @@ router.get('/profile', isAuth, (req, res) => {
     });
 });
 
-router.get('/admin/users',  isAuth, 
-    authController.requireRole('admin'), 
+router.get('/admin/users', isAuth,
+    authController.requireRole('admin'),
     (req, res) => {
         res.json({
             success: true,
