@@ -7,6 +7,7 @@ const dbConnect = require('./database/dbConnect');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const passport = require('./config/passport');
+const arcjetMiddleware = require('./middleware/arcjet.middleware');
 
 const app = express();
 
@@ -50,6 +51,8 @@ app.use(session({
 // Inicializar Passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use('/api', arcjetMiddleware); // Arcjet Protege toda la API
 
 // Rutas
 const { router: authRouter } = require('./routes/authRoutes');

@@ -8,12 +8,11 @@ interface AnimatedTextProps {
     baseColor?: string;
     hoverColor?: string;
     underline?: boolean;
-    onClick?: (e: React.MouseEvent<HTMLSpanElement>) => void;
+    onClick?: (e: React.MouseEvent<HTMLSpanElement | HTMLAnchorElement>) => void;
     href?: string;
     asLink?: boolean;
     disabled?: boolean;
 }
-
 
 const AnimatedText = ({
     children,
@@ -95,12 +94,12 @@ const AnimatedText = ({
     }, [baseColor, hoverColor, disabled]);
 
     // Estilos iniciales y clases
-    const baseTextStyle = {
+    const baseTextStyle: React.CSSProperties = {
         color: baseColor || 'inherit',
         willChange: 'transform, opacity'
     };
     
-    const hoverTextStyle = {
+    const hoverTextStyle: React.CSSProperties = {
         color: hoverColor,
         position: 'absolute',
         top: 0,
@@ -124,7 +123,7 @@ const AnimatedText = ({
             <span
                 ref={hoverTextRef}
                 className="inline-block"
-                style={hoverTextStyle as React.CSSProperties}
+                style={hoverTextStyle}
             >
                 {children}
             </span>
@@ -138,13 +137,13 @@ const AnimatedText = ({
         </>
     );
 
-    // Renderizado condicional según el tipo (link o span)
+    // ✅ FIXED: Type-safe conditional rendering
     if (asLink) {
         return (
             <a
                 ref={elementRef as React.RefObject<HTMLAnchorElement>}
                 href={href || "#"}
-                onClick={onClick as any}
+                onClick={onClick as React.MouseEventHandler<HTMLAnchorElement>}
                 className={containerClass}   
             >
                 {content}
@@ -156,7 +155,7 @@ const AnimatedText = ({
         <span
             ref={elementRef as React.RefObject<HTMLSpanElement>}
             className={containerClass}
-            onClick={onClick}
+            onClick={onClick as React.MouseEventHandler<HTMLSpanElement>}
         >
             {content}
         </span>
