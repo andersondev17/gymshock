@@ -1,6 +1,6 @@
 import { RecentActivity } from "@/constants";
 
-const RecentActivityFeed = ({ loading }: { loading: boolean }) => {
+const RecentActivityFeed = () => {
 
     return (
         <div className="lg:col-span-3 bg-gradient-to-b from-gray-900 to-slate-800 text-white rounded-xl p-6 shadow-lg">

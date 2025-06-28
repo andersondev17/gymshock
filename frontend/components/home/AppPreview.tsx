@@ -18,7 +18,7 @@ const AppPreview = () => {
 
                 <div className="p-5 space-y-6">
                     <div className="flex justify-between items-center">
-                        <h3 className="font-bold">Today's Workout</h3>
+                        <h3 className="font-bold">Today don&apos;t miss Workout</h3>
                         <span className="text-gray-500">June 15</span>
                     </div>
 
