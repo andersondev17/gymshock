@@ -28,7 +28,10 @@ store.on('error', function(error) {
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: [
+        process.env.FRONTEND_URL || 'http://localhost:3000',
+        'https://gymshock-kap4.vercel.app'
+    ],
     credentials: true
 }));
 app.use(express.json());
