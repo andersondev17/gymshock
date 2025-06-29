@@ -20,7 +20,7 @@ dbConnect().catch(err => {
 
 // Configurar almacén de sesiones
 const store = new MongoDBStore({
-    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/gymshock',
+    uri: process.env.MONGODB_URI ,
     collection: 'sessions'
 });
 
@@ -32,7 +32,8 @@ store.on('error', function (error) {
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
 
 }));
 app.use(express.json());
@@ -40,7 +41,7 @@ app.use(morgan('dev'));
 
 // Configuración de sesión
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'keyboard cat',
+    secret: process.env.SESSION_SECRET ,
     resave: false,
     saveUninitialized: false,
     store: store,
