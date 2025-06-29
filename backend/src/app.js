@@ -11,6 +11,8 @@ const arcjetMiddleware = require('./middleware/arcjet.middleware');
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 dbConnect().catch(err => {
     console.error('Error al conectar a MongoDB:', err);
     process.exit(1);
@@ -22,7 +24,7 @@ const store = new MongoDBStore({
     collection: 'sessions'
 });
 
-store.on('error', function(error) {
+store.on('error', function (error) {
     console.error('Error en la sesión de MongoDB:', error);
 });
 
@@ -47,18 +49,21 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 7, // 1 semana
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
 }));
 
 // Inicializar Passport
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use('/api', arcjetMiddleware); // Arcjet Protege toda la API
+app.use('/api', (req, res, next) => {
+    if (req.method === 'OPTIONS') return next();
+    arcjetMiddleware(req, res, next);
+});
 
 // Rutas
 const { router: authRouter } = require('./routes/authRoutes');
+const e = require('express');
 app.use('/api/auth', authRouter);
 app.use('/api/exercises', require('./routes/exerciseRoutes'));
 
@@ -66,7 +71,9 @@ app.use('/api/exercises', require('./routes/exerciseRoutes'));
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
-        message: 'GymShock API running'
+        message: 'GymShock API running',
+        cors: 'enabled',
+        TimeRanges: new Date().toISOString()
     });
 });
 
@@ -81,7 +88,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
-    console.log(`🔗 Conectado al frontend en ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
+    console.log(`🔗 Conectado al frontend en ${process.env.FRONTEND_URL}`);
 });
 
 module.exports = app;
