@@ -21,7 +21,10 @@ export const youtubeOptions = {
 export const fetchData = async <T>(endpoint: string, params: Record<string, any> = {}): Promise<T> => {
     try {
         const url = `${API_URL}${endpoint}`;
-        const response = await axios.get<{ data: T; success: boolean }>(url, { params });
+        const response = await axios.get<{ data: T; success: boolean }>(url, {
+            params,
+            withCredentials: true,
+        });
         return response.data.data;
     } catch (error) {
         console.error('Error fetching data:', error);

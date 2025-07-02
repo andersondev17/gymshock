@@ -20,27 +20,31 @@ dbConnect().catch(err => {
 const allowedOrigins = [
     process.env.FRONTEND_URL,
     'https://gymshock-kap4.vercel.app'
-];
+].filter(Boolean);
 
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
+            console.log('❌ Origin blocked:', origin);
             callback(new Error('Origen no permitido por CORS'));
         }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], //  Incluir OPTIONS
-    allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'], //  Cookies
-    exposedHeaders: ['Authorization', 'Set-Cookie'], //  Headers expuestos
-    optionsSuccessStatus: 204 // Respuesta vacía para OPTIONS
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Content-Type', 'Authorization', 'Set-Cookie',
+        'Cookie', 'X-Requested-With', 'Accept', 'Origin'
+    ],
+    exposedHeaders: ['Authorization', 'Set-Cookie'],
+    optionsSuccessStatus: 204
 };
 
 // Middlewares
 app.use(cors(corsOptions)); //  Aplica CORS primero
 app.use(express.json());
-app.use(morgan('dev'));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Configuración de sesión
 app.use(session({
@@ -49,8 +53,14 @@ app.use(session({
     saveUninitialized: false,
     store: new MongoDBStore({
         uri: process.env.MONGODB_URI,
-        collection: 'sessions'
+        collection: 'sessions',
+        connectionOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        }
     }),
+    name: 'gymshock.sid',
+    proxy: true,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
@@ -65,7 +75,9 @@ app.use(passport.session());
 
 // 3. Middleware Arcjet solo para métodos no-OPTIONS
 app.use('/api', (req, res, next) => {
-    if (req.method === 'OPTIONS') return next(); 
+    if (req.method === 'OPTIONS' || req.path === '/api/health') {
+        return next();
+    }
     arcjetMiddleware(req, res, next);
 });
 
@@ -79,30 +91,40 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
         message: 'GymShock API running',
-        timestamp: new Date().toISOString(),
-        allowedOrigins: allowedOrigins 
+        timestamp: new Date().toISOString()
     });
 });
 
 // 4. Manejo de errores con headers CORS
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    
-    // Añade headers CORS incluso en errores
-    const origin = req.headers.origin;
-    if (origin && allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    if (process.env.NODE_ENV !== 'production') {
+        console.error(' API Error:', {
+            message: err.message,
+            stack: err.stack,
+            url: req.originalUrl,
+            method: req.method
+        });
     }
-    
-    res.status(500).json({
+
+    if (err.message === 'Not allowed by CORS') {
+        return res.status(403).json({
+            success: false,
+            error: 'CORS_FORBIDDEN',
+            message: 'Origin not allowed'
+        });
+    }
+
+    const status = err.statusCode || err.status || 500;
+    res.status(status).json({
         success: false,
-        message: err.message || 'Error del servidor'
+        message: process.env.NODE_ENV === 'production'
+            ? 'Internal server error'
+            : err.message
     });
 });
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor en puerto ${PORT}`);
-    console.log(`🌐 Orígenes permitidos: ${allowedOrigins.join(', ')}`);
 });
