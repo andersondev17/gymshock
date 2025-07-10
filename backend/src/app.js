@@ -10,7 +10,7 @@ const arcjetMiddleware = require('./middleware/arcjet.middleware');
 
 const app = express();
 
-app.set('trust proxy', 1); 
+app.set('trust proxy', 1);
 
 dbConnect().catch(err => {
     console.error('Error al conectar a MongoDB:', err);
@@ -28,7 +28,7 @@ const corsOptions = {
             callback(null, true);
         } else {
             console.log('❌ Origin blocked:', origin);
-            callback(new Error('Origen no permitido por CORS'));
+            callback(new Error('Not allowed by CORS'));
         }
     },
     credentials: true,
@@ -43,6 +43,7 @@ const corsOptions = {
 
 // Middlewares
 app.use(cors(corsOptions)); //  Aplica CORS primero
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
