@@ -41,7 +41,10 @@ const getArcjetInstance = async () => {
 
         return {
             protect: async (req) => {
+                const res = req.res;
                 const ip = req.ip || '127.0.0.1';
+                const origin = req.headers.origin;
+
                 requestCounts[ip] = (requestCounts[ip] || 0) + 1;
 
                 // cuando hay muchas IPs
@@ -52,7 +55,17 @@ const getArcjetInstance = async () => {
                 }
 
                 const isBlocked = requestCounts[ip] > 3;
+                if (isBlocked && res) {
+                    const allowedOrigins = [
+                        process.env.FRONTEND_URL,
+                        'https://gymshock-kap4.vercel.app'
+                    ].filter(Boolean);
 
+                    if (origin && allowedOrigins.includes(origin)) {
+                        res.setHeader('Access-Control-Allow-Origin', origin);
+                        res.setHeader('Access-Control-Allow-Credentials', 'true');
+                    }
+                }
                 return {
                     isDenied: () => isBlocked,
                     reason: {

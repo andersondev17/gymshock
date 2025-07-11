@@ -47,7 +47,6 @@ app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Configuración de sesión
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -55,10 +54,6 @@ app.use(session({
     store: new MongoDBStore({
         uri: process.env.MONGODB_URI,
         collection: 'sessions',
-        connectionOptions: {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        }
     }),
     name: 'gymshock.sid',
     proxy: true,
@@ -76,9 +71,7 @@ app.use(passport.session());
 
 // 3. Middleware Arcjet solo para métodos no-OPTIONS
 app.use('/api', (req, res, next) => {
-    if (req.method === 'OPTIONS' || req.path === '/api/health') {
-        return next();
-    }
+    if (req.method === 'OPTIONS' || req.path === '/api/health') return next();
     arcjetMiddleware(req, res, next);
 });
 
@@ -98,6 +91,17 @@ app.get('/api/health', (req, res) => {
 
 // 4. Manejo de errores con headers CORS
 app.use((err, req, res, next) => {
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+        process.env.FRONTEND_URL,
+        'https://gymshock-kap4.vercel.app'
+    ].filter(Boolean);
+
+    if (origin && allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+
     if (process.env.NODE_ENV !== 'production') {
         console.error(' API Error:', {
             message: err.message,

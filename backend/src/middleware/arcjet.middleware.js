@@ -23,7 +23,7 @@ const arcjetMiddleware = async (req, res, next) => {
                 decision = await aj.project(req);
             } catch (innerError) {
                 console.error('❌ Error en project:', innerError.message);
-                return next(); // ✅ Fail open
+                return next(); 
             }
         }
 
