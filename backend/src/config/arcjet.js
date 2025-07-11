@@ -17,16 +17,19 @@ const getArcjetInstance = async () => {
                 "ip.src",
                 "http.request.headers['user-agent']"],
             rules: [
-                arcjetModule.shield({ mode: "LIVE" }), // 🛡️ 1. DDoS Protection
+                arcjetModule.shield({ mode: "LIVE", paths: [{ method: "*", path: "!^/api/(auth|exercises|health)" }] }), // 🛡️ 1. DDoS Protection
                 arcjetModule.detectBot({// 🤖 2. Bot Detection
                     mode: "LIVE",
                     allow: ["CATEGORY:SEARCH_ENGINE"],
+                    paths: [{ method: "*", path: "!^/api/(auth|exercises|health)" }],
                 }),
                 arcjetModule.tokenBucket({// ⏱️ 3. Rate Limiting
                     mode: "LIVE",
                     refillRate: 5,      // 5 tokens por intervalo
                     interval: 15,       // cada 15 segundos
                     capacity: 20,       // 20 solicitudes máximas
+                    paths: [{ method: "*", path: "!^/api/(auth|exercises|health)" }]
+
                 }),
             ],
         });
@@ -58,7 +61,7 @@ const getArcjetInstance = async () => {
                 if (isBlocked && res) {
                     const allowedOrigins = [
                         process.env.FRONTEND_URL,
-                        'https://gymshock-kap4.vercel.app'
+                        process.env.FRONTEND_URL_SECONDARY
                     ].filter(Boolean);
 
                     if (origin && allowedOrigins.includes(origin)) {

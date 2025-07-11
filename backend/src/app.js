@@ -19,7 +19,7 @@ dbConnect().catch(err => {
 
 const allowedOrigins = [
     process.env.FRONTEND_URL,
-    'https://gymshock-kap4.vercel.app'
+    process.env.FRONTEND_URL_SECONDARY
 ].filter(Boolean);
 
 const corsOptions = {
@@ -94,7 +94,7 @@ app.use((err, req, res, next) => {
     const origin = req.headers.origin;
     const allowedOrigins = [
         process.env.FRONTEND_URL,
-        'https://gymshock-kap4.vercel.app'
+        process.env.FRONTEND_URL_SECONDARY
     ].filter(Boolean);
 
     if (origin && allowedOrigins.includes(origin)) {
