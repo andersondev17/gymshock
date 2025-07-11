@@ -3,6 +3,10 @@ const { getArcjetInstance } = require('../config/arcjet');
 
 let requestCounter = 0;
 
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'https://gymshock-kap4.vercel.app'
+].filter(Boolean);
 const arcjetMiddleware = async (req, res, next) => {
     requestCounter++;
 
@@ -19,13 +23,18 @@ const arcjetMiddleware = async (req, res, next) => {
                 decision = await aj.project(req);
             } catch (innerError) {
                 console.error('❌ Error en project:', innerError.message);
-                return next(); // ✅ Fail open
+                return next(); 
             }
         }
 
         if (decision && typeof decision.isDenied === 'function' && decision.isDenied()) {
             console.log(`⛔ Solicitud bloqueada por Arcjet - IP: ${req.ip}`);
 
+            const origin = req.headers.origin;
+            if (origin && allowedOrigins.includes(origin)) {
+                res.setHeader('Access-Control-Allow-Origin', origin);
+                res.setHeader('Access-Control-Allow-Credentials', 'true');
+            }
             if (decision.reason && typeof decision.reason.isRateLimit === 'function' && decision.reason.isRateLimit()) {
                 console.log(`⏱️ Razón: Rate Limit Exceeded`);
                 return res.status(429).json({
