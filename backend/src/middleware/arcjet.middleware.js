@@ -5,10 +5,21 @@ let requestCounter = 0;
 
 const allowedOrigins = [
     process.env.FRONTEND_URL,
-    'https://gymshock-kap4.vercel.app'
+    process.env.FRONTEND_URL_SECONDARY,
 ].filter(Boolean);
+
+const setCorsHeaders = (res, origin) => {
+    if (origin && allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+};
+
 const arcjetMiddleware = async (req, res, next) => {
     requestCounter++;
+    const origin = req.headers.origin;
+    
+    setCorsHeaders(res, origin);
 
     try {
         const aj = await getArcjetInstance();
@@ -30,11 +41,8 @@ const arcjetMiddleware = async (req, res, next) => {
         if (decision && typeof decision.isDenied === 'function' && decision.isDenied()) {
             console.log(`⛔ Solicitud bloqueada por Arcjet - IP: ${req.ip}`);
 
-            const origin = req.headers.origin;
-            if (origin && allowedOrigins.includes(origin)) {
-                res.setHeader('Access-Control-Allow-Origin', origin);
-                res.setHeader('Access-Control-Allow-Credentials', 'true');
-            }
+            setCorsHeaders(res, origin);
+            
             if (decision.reason && typeof decision.reason.isRateLimit === 'function' && decision.reason.isRateLimit()) {
                 console.log(`⏱️ Razón: Rate Limit Exceeded`);
                 return res.status(429).json({
@@ -66,6 +74,7 @@ const arcjetMiddleware = async (req, res, next) => {
 
     } catch (error) {
         console.error(`❌ Arcjet Middleware Error: ${error.message}`);
+        setCorsHeaders(res, origin);
         next();
     }
 };

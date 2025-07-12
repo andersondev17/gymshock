@@ -9,15 +9,7 @@ const nextConfig = {
       },
     ],
   },
-  // Opcional: Añadir configuración para el API si es necesario
-  async rewrites() {
-    return [
-      {
-        source: '/api/exercises/:path*',
-        destination: 'https://exercisedb.p.rapidapi.com/:path*',
-      },
-    ];
-  },
+
 }
 
 module.exports = nextConfig
