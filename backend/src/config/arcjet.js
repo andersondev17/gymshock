@@ -13,9 +13,7 @@ const getArcjetInstance = async () => {
 
         arcjetInstance = arcjet({
             key: process.env.ARCJET_KEY || 'aj_test123456789',
-            characteristics: ["userId",
-                "ip.src",
-                "http.request.headers['user-agent']"],
+            characteristics: ["ip.src"],
             rules: [
                 arcjetModule.shield({ mode: "LIVE", paths: [{ method: "*", path: "!^/api/(auth|exercises|health)" }] }), // 🛡️ 1. DDoS Protection
                 arcjetModule.detectBot({// 🤖 2. Bot Detection

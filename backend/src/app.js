@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const dbConnect = require('./database/dbConnect');
+const dbConnect = require('./database/dbconnect');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const passport = require('./config/passport');
@@ -14,7 +14,6 @@ app.set('trust proxy', 1);
 
 dbConnect().catch(err => {
     console.error('Error al conectar a MongoDB:', err);
-    process.exit(1);
 });
 
 const allowedOrigins = [
