@@ -14,7 +14,7 @@ const HeroBanner = () => {
 
     const initHeroAnimations = async () => {
       const { gsap } = await import('gsap');
-      
+
       const tl = gsap.timeline({
         ease: "power2.out"
       });
@@ -23,25 +23,25 @@ const HeroBanner = () => {
         .set("#hero-image", { opacity: 0, y: 50, scale: 0.9 })
         .set("#hero-buttons", { opacity: 0, y: 20 })
         .set("#hero-floats", { opacity: 0 })
-        .to("#hero-content", { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.8 
-        })
-        .to("#hero-image", { 
-          opacity: 1, 
-          y: 0, 
-          scale: 1,
-          duration: 1.2 
-        }, "-=0.5")
-        .to("#hero-buttons", { 
-          opacity: 1, 
-          y: 0,
-          duration: 0.6 
-        }, "-=0.3")
-        .to("#hero-floats", { 
+        .to("#hero-content", {
           opacity: 1,
-          duration: 0.8 
+          y: 0,
+          duration: 0.8
+        })
+        .to("#hero-image", {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.2
+        }, "-=0.5")
+        .to("#hero-buttons", {
+          opacity: 1,
+          y: 0,
+          duration: 0.6
+        }, "-=0.3")
+        .to("#hero-floats", {
+          opacity: 1,
+          duration: 0.8
         }, "-=0.4");
     };
 
@@ -51,7 +51,7 @@ const HeroBanner = () => {
   return (
     <div className="relative w-full h-dvh overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-[700px]">
       {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 z-0 bg-black/40 backdrop-blur-sm" >
         <div className="absolute top-20 left-[15%] w-20 h-20 rounded-full bg-red-500/20 blur-xl" />
         <div className="absolute top-[40%] left-[25%] w-32 h-32 rounded-full bg-blue-500/20 blur-xl" />
         <div className="absolute bottom-40 left-[10%] w-24 h-24 rounded-full bg-purple-500/20 blur-xl" />
@@ -62,26 +62,35 @@ const HeroBanner = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto h-full px-4 sm:px-2 lg:px-5 flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-16">
-        
+
         {/* Left Content */}
-        <div 
+        <div
           id="hero-content"
           className="z-10 w-full lg:w-1/2 pt-16 lg:pt-0"
           style={{ opacity: 0 }}
         >
-          <div className="inline-block mb-3 px-4 py-1 rounded-full bg-red-600/20 text-red-500 font-medium text-sm">
+          <div className="inline-block mb-3 px-4 py-1 rounded-full bg-transparent border-red-700 text-red-500 font-medium text-sm">
             FITNESS REDEFINED
           </div>
-
-          <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight mb-3">
-            TRANSFORM YOUR BODY
+          <h1
+            className="text-[40px] md:text-[60px] lg:text-[80px] font-bold leading-[0.9] tracking-tight"
+            style={{
+              WebkitTextStroke: '1.5px white',
+              WebkitTextFillColor: 'transparent',
+              color: 'transparent'
+            }}
+          >
+            WORKOUTS, <span className="text-red-600" style={{ WebkitTextFillColor: 'red', color: 'red' }}>SERIES</span>
           </h1>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-red-600 tracking-tight mb-6">
-            TRANSFORM YOUR LIFE
+
+
+
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight mb-6">
+            AND MORE
           </h2>
           <p className="text-base sm:text-lg text-gray-300 mb-8 max-w-full sm:max-w-[600px]">
-            Discover over 1300+ exercises tailored to your goals. Whether you&apos;re a beginner or a pro, find the perfect workout routine to push your limits.
-          </p>
+
+            FREE ANYTIME AND ANYWHERE </p>
 
           {/* Buttons */}
           <div
@@ -92,7 +101,7 @@ const HeroBanner = () => {
             <Link href="/exercises" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="bg-red-600 hover:bg-red-700 font-medium text-lg px-6 py-4 rounded-xl shadow-lg shadow-red-600/20 w-full"
+                className="bg-transparent border-2 border-red-600 text-red-600 hover:bg-red-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300 font-medium text-lg px-6 py-4 rounded-xl shadow-lg shadow-red-600/20 w-full transition duration-300 ease-in-out hover:scale-105"
               >
                 Browse Exercises
               </Button>
@@ -101,7 +110,7 @@ const HeroBanner = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-gray-900 hover:bg-white/60 font-medium text-lg px-6 py-4 rounded-xl w-full"
+                className="border-white text-white bg-transparent hover:bg-white/60 font-medium text-lg px-6 py-4 rounded-xl w-full"
               >
                 Start Training
               </Button>
@@ -128,7 +137,7 @@ const HeroBanner = () => {
         >
           <div className="relative w-full aspect-square max-w-md sm:max-w-lg mx-auto">
             {/* Floating Cards */}
-            <div 
+            <div
               id="hero-floats"
               className="contents"
               style={{ opacity: 0 }}
@@ -145,14 +154,14 @@ const HeroBanner = () => {
                 <div className="text-xs text-gray-300">Calories Burned</div>
                 <div className="text-base sm:text-lg font-bold">1,248</div>
                 <div className="flex gap-1 items-center mt-1 text-green-400 text-xs">
-                  <Image 
-                    width={40} 
-                    height={40} 
-                    alt="Progress indicator" 
-                    className="border rounded-full" 
-                    src="/assets/images/banner.png" 
-                    loading="eager" 
-                    priority 
+                  <Image
+                    width={40}
+                    height={40}
+                    alt="Progress indicator"
+                    className="border rounded-full"
+                    src="/assets/images/banner.png"
+                    loading="eager"
+                    priority
                   />
                   <span className="text-xs sm:text-sm">12% more than yesterday</span>
                 </div>

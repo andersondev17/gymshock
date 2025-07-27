@@ -1,8 +1,7 @@
+'use client';
 
-const page = () => {
-    return (
-        <div>Programas de entrenamiento </div>
-    )
+import ProgramBuilder from '@/components/programs/ProgramBuilder';
+
+export default function ProgramsPage() {
+    return <ProgramBuilder />;
 }
-
-export default page

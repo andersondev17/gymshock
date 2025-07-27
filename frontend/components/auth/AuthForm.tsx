@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/context/AuthProvider';
-import { Dumbbell, Eye, EyeOff, Lock, Mail, User, Users } from 'lucide-react';
+import { Dumbbell, Eye, EyeOff, Lock, Mail, User, Users, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -24,29 +24,17 @@ function RoleSelector({ onRoleSelect, isLoading, onBack }: RoleSelectorProps) {
     const roles = [
         {
             id: 'user' as const,
-            title: 'Fitness Enthusiast',
-            description: 'Access exercises, track workouts, and achieve your fitness goals',
+            title: 'Enthusiast',
+            description: 'Access exercises and track workouts',
             icon: <Dumbbell className="h-8 w-8 text-white" />,
-            benefits: [
-                'Access to 1300+ exercises',
-                'Workout tracking',
-                'Progress monitoring',
-                'Community features'
-            ],
             color: 'from-blue-600 to-blue-500',
             hoverColor: 'hover:from-blue-500 hover:to-blue-400'
         },
         {
             id: 'trainer' as const,
-            title: 'Personal Trainer',
-            description: 'Create programs, manage clients, and grow your fitness business',
+            title: 'Trainer',
+            description: 'Create programs and manage clients',
             icon: <Users className="h-8 w-8 text-white" />,
-            benefits: [
-                'All user features',
-                'Create workout programs',
-                'Client management',
-                'Progress analytics'
-            ],
             color: 'from-red-600 to-red-500',
             hoverColor: 'hover:from-red-500 hover:to-red-400'
         }
@@ -55,11 +43,10 @@ function RoleSelector({ onRoleSelect, isLoading, onBack }: RoleSelectorProps) {
     return (
         <div className="w-full max-w-4xl mx-auto">
             <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-white mb-2">Welcome to GymShock!</h1>
-                <p className="text-gray-300">Choose your role to get started</p>
+                <h1 className="text-2xl font-bold text-white mb-2">Choose your role to get started</h1>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8  px-4 py-2 text-sm md:text-base">
                 {roles.map((role) => (
                     <div
                         key={role.id}
@@ -77,24 +64,15 @@ function RoleSelector({ onRoleSelect, isLoading, onBack }: RoleSelectorProps) {
 
                             <div>
                                 <h3 className="text-xl font-bold text-white mb-2">{role.title}</h3>
-                                <p className="text-white/90 text-sm mb-4">{role.description}</p>
+                                <p className="text-white/90 text-sm mb-4 flex items-center">{role.description}</p>
                             </div>
 
-                            <ul className="space-y-2 text-sm text-white/90">
-                                {role.benefits.map((benefit, index) => (
-                                    <li key={index} className="flex items-center space-x-2">
-                                        <div className="w-1.5 h-1.5 bg-white rounded-full" />
-                                        <span>{benefit}</span>
-                                    </li>
-                                ))}
-                            </ul>
-
                             <Button
-                                className="w-full bg-white/20 hover:bg-white/30 text-white font-medium"
+                                className="w-full bg-white text-gray-900 hover:bg-gray-200 font-semibold shadow-sm"
                                 disabled={isLoading}
                                 type="button"
                             >
-                                {isLoading ? 'Setting up...' : `Join as ${role.title}`}
+                                {isLoading ? 'Setting up...' : `Join`}
                             </Button>
                         </div>
                     </div>
@@ -110,9 +88,6 @@ function RoleSelector({ onRoleSelect, isLoading, onBack }: RoleSelectorProps) {
                 >
                     ← Back to registration
                 </button>
-                <p className="text-sm text-gray-400 mt-2">
-                    You can always change your role later in your profile settings
-                </p>
             </div>
         </div>
     );
@@ -213,9 +188,11 @@ export default function AuthForm({ type }: AuthFormProps) {
             </h1>
 
             {error && (
-                <div className="bg-red-500/10 border-l-4 border-red-500 text-red-400 p-3 mb-4 rounded">
-                    {error}
+                <div className="bg-red-500/10 border-l-4 border-red-500 text-red-400 p-3 mb-4 rounded flex items-start gap-2">
+                    <XCircle className="mt-0.5 w-5 h-5" />
+                    <span>{error}</span>
                 </div>
+
             )}
 
             {/* Google OAuth Button */}
@@ -296,7 +273,7 @@ export default function AuthForm({ type }: AuthFormProps) {
                 )}
 
                 <div>
-                    <label className="text-gray-300 text-sm mb-1 block">Password</label>
+                    <label className="text-gray-300 text-sm mb-1 block">must be at least 8 characters</label>
                     <div className="relative">
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
                         <Input
@@ -312,6 +289,7 @@ export default function AuthForm({ type }: AuthFormProps) {
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                            aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                         >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
