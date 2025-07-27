@@ -141,3 +141,4 @@ export const FOOTER_CONFIG = {
         placeholder: "Email"
     }
 };
+
