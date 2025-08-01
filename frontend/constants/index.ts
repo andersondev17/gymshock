@@ -2,26 +2,41 @@ export const adminSideBarLinks = [
     {
         img: "/assets/icons/admin/home.svg",
         route: "/admin",
-        text: "Home",
+        text: "HOME",
     },
     {
         img: "/assets/icons/admin/users.svg",
         route: "/admin/users",
-        text: "Users",
+        text: "USERS",
     },
     {
         img: "/assets/icons/admin/equipment.png",
         route: "/admin/exercises",
-        text: "Exercises",
+        text: "EXERCISES",
     },
 
 ];
-
+export const roles = [
+        {
+            id: 'user' as const,
+            title: 'Enthusiast',
+            description: 'Access exercises and track workouts',
+            bgClass: 'from-blue-600/80 to-blue-500/80',
+            hoverClass: 'hover:from-blue-500/90 hover:to-blue-400/90'
+        },
+        {
+            id: 'trainer' as const,
+            title: 'Trainer',
+            description: 'Create programs and manage clients',
+            bgClass: 'from-red-600/80 to-red-500/80',
+            hoverClass: 'hover:from-red-500/90 hover:to-red-400/90'
+        }
+    ];
 export const navItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Exercises', href: '/exercises' },
-    { label: 'Programs', href: '/programs' },
-    { label: 'Community', href: '/community' }
+    { label: 'HOME', href: '/' },
+    { label: 'EXERCISES', href: '/exercises' },
+    { label: 'PROGRAMS', href: '/programs' },
+    { label: 'COMMUNITY', href: '/community' }
 ] as const;
 
 export const activityData = [

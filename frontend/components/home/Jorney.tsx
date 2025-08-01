@@ -1,5 +1,4 @@
 'use client';
-
 import { JourneyProps } from '@/types/exercise';
 import { animate } from 'animejs';
 import { ArrowRight, CheckCircle } from 'lucide-react';
@@ -9,66 +8,49 @@ import BlurFadeText from '../magicui/blur-fade-text';
 import { Button } from '../ui/button';
 import AppPreview from './AppPreview';
 
-const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary}: JourneyProps) => {
+const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: JourneyProps) => {
     const sectionRef = useRef<HTMLElement>(null);
     const animationTriggered = useRef(false);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && !animationTriggered.current) {
-                    animateBenefits();
-                    animationTriggered.current = true;
-                }
-            },
-            { threshold: 0.2 }
-        );
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting && !animationTriggered.current) {
+                animate('.benefit-item', {
+                    opacity: [0, 1],
+                    translateX: [20, 0],
+                    delay: (_, i) => i * 150,
+                    duration: 600,
+                    easing: 'easeOutQuad'
+                });
+                animationTriggered.current = true;
+            }
+        }, { threshold: 0.2 });
 
-        if (sectionRef.current) observer.observe(sectionRef.current);
-
+        sectionRef.current && observer.observe(sectionRef.current);
         return () => observer.disconnect();
     }, []);
 
-    const animateBenefits = () => {
-        animate('.benefit-item', {
-            opacity: [0, 1],
-            translateX: [20, 0],
-            delay: (el, i) => i * 150,
-            duration: 600,
-            easing: 'easeOutQuad'
-        });
-    };
-
     return (
-        <section
-            ref={sectionRef}
-            className="relative min-h-screen w-screen bg-gray-100"
-        >
+        <section ref={sectionRef} className="bg-gymshock-dark-900 min-h-screen relative w-screen">
             <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center gap-12">
-                    {/* Content Section */}
                     <div className="flex-1 space-y-8">
-                        <div className="inline-block px-4 py-1 rounded-full bg-red-600/20 text-red-500 text-sm">
+                        <div className="bg-gymshock-primary-600/20 inline-block px-4 py-1 rounded-full text-gymshock-primary-500 text-sm">
                             💪 FITNESS JOURNEY
                         </div>
 
-                        <BlurFadeText
-                            delay={0.2}
-                            className="text-4xl md:text-5xl font-bold text-gray-900"
-                            yOffset={8}
-                            text={title}
-                        />
+                        <BlurFadeText delay={0.2} className="text-4xl md:text-5xl font-bold text-white" yOffset={8} text={title} />
 
-                        <p className="text-lg text-gray-600 max-w-2xl">
+                        <p className="text-gymshock-dark-400 mb-8 max-w-full sm:max-w-[600px] text-base sm:text-lg">
                             {subtitle}
                         </p>
 
                         <div className="space-y-4">
-                            {benefits.map((benefit, index) => (
-                                <div key={index} className="benefit-item opacity-0">
+                            {benefits.map((benefit, i) => (
+                                <div key={i} className="benefit-item opacity-0">
                                     <div className="flex items-start gap-3">
-                                        <CheckCircle className="text-red-500 mt-1 flex-shrink-0" />
-                                        <span className="text-gray-700">{benefit.text}</span>
+                                        <CheckCircle className="text-gymshock-primary-500 mt-1 flex-shrink-0" />
+                                        <span className="text-gymshock-dark-400">{benefit.text}</span>
                                     </div>
                                 </div>
                             ))}
@@ -88,15 +70,11 @@ const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary}: Journey
                             </Link>
                         </div>
                     </div>
-
-                    {/* App Preview Section */}
                     <AppPreview />
                 </div>
             </div>
         </section>
     );
 };
-
-
 
 export default Journey;

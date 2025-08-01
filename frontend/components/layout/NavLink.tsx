@@ -3,7 +3,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const NavLink = ({ href, label, className }: { href: string; label: string; className?: string }) => {
+const NavLink = ({ href, label, className, onClick }: {
+    href: string;
+    label: string;
+    className?: string;
+    onClick?: () => void
+}) => {
     const pathname = usePathname();
     const isHashLink = href.startsWith('#');
     const [isActive, setIsActive] = useState(false);
@@ -25,7 +30,6 @@ const NavLink = ({ href, label, className }: { href: string; label: string; clas
 
                 let shouldActivate = entry.isIntersecting;
 
-                // Priorizar secciones sobre Home
                 if (isHome) {
                     shouldActivate = !otherSectionActive && entry.isIntersecting;
                 } else {
@@ -44,10 +48,11 @@ const NavLink = ({ href, label, className }: { href: string; label: string; clas
     return (
         <Link
             href={href}
+            onClick={onClick}
             className={cn(
-                'text-sm font-medium transition-colors hover:text-primary relative py-2',
-                isActive && 'text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-red-500',
-                !isActive && 'text-muted-foreground',
+                'text-sm font-medium transition-colors relative py-2',
+                isActive && 'text-white after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-gymshock-primary-600',
+                !isActive && 'text-gymshock-dark-300 hover:text-white',
                 className
             )}
         >

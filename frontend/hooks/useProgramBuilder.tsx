@@ -8,6 +8,7 @@ export function useProgramBuilder() {
     const [selectedLevel, setSelectedLevel] = useState<ProgramLevel | null>(null);
     const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const [selectedFrequency, setSelectedFrequency] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [step, setStep] = useState(1);
@@ -32,16 +33,13 @@ export function useProgramBuilder() {
             setDirection('forward');
         }
 
-        setStep(newStep); // Actualizar el paso
+        setStep(newStep);
 
-        setTimeout(() => setIsTransitioning(false), 300);
     }, [currentStep]);
 
     const setLevel = (level: ProgramLevel) => {
         setSelectedLevel(level);
         setError(null);
-        // AVANZA después de selección
-        setTimeout(() => goToStep(2), 400);
     };
 
     const toggleGoal = (goalId: string) => {
@@ -55,11 +53,6 @@ export function useProgramBuilder() {
                 return prev;
             }
 
-            // avanza si se alcanza el mínimo
-            if (newGoals.length === VALIDATION_RULES.MIN_GOALS) {
-                setTimeout(() => goToStep(3), 2000);
-            }
-
             return newGoals;
         });
     };
@@ -67,9 +60,12 @@ export function useProgramBuilder() {
     const setTime = (time: string) => {
         setSelectedTime(time);
         setError(null);
-        setTimeout(() => goToStep(4), 400);
     };
 
+    const setFrequency = (frequency: string) => {
+        setSelectedFrequency(frequency);
+        setError(null);
+    };
     const createProgram = async () => {
         if (!isComplete) {
             setError('Completa todos los pasos primero');
@@ -79,7 +75,7 @@ export function useProgramBuilder() {
         setIsLoading(true);
         try {
             await new Promise(resolve => setTimeout(resolve, 1000));
-            router.push('/programs/personalized');
+            router.push('/programs/myprogram');
         } catch (err) {
             setError('Error al crear el programa');
         } finally {
@@ -88,7 +84,6 @@ export function useProgramBuilder() {
     };
 
     return {
-        // Todo lo existente
         currentStep,
         isComplete,
         isLoading,
@@ -96,18 +91,21 @@ export function useProgramBuilder() {
         selectedLevel,
         selectedGoals,
         selectedTime,
+        selectedFrequency,
         setLevel,
         toggleGoal,
         setTime,
+        setFrequency,
         createProgram,
         clearError: () => setError(null),
         direction,
         isTransitioning,
         goToStep,
         canGoBack: currentStep > 1,
-        canGoForward: currentStep < 4 &&
+        canGoForward: currentStep < 5 &&
             (currentStep === 1 ? !!selectedLevel :
                 currentStep === 2 ? selectedGoals.length > 0 :
-                    currentStep === 3 ? !!selectedTime : false)
+                    currentStep === 3 ? !!selectedTime :
+                        currentStep === 4 ? !!selectedFrequency : false)
     };
 }

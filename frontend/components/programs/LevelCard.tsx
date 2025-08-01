@@ -19,12 +19,10 @@ export default function LevelCard({ levelKey, level, isSelected, onSelect }: Lev
     return (
         <>
             <div
-                className={` cursor-pointer rounded-lg border-2 transition-all duration-300 hover:shadow-md relative
-                    ${isSelected
-                        ? "border-red-500 bg-red-50 ring-2 ring-red-200"
-                        : "border-gray-200 hover:border-gray-300"
-                    }
-        `}
+                className={`cursor-pointer rounded-xl border-2 transition-all duration-300 p-6 space-y-4 ${isSelected
+                        ? "border-gymshock-primary-500 bg-gymshock-primary-500/10 backdrop-blur-md"
+                        : "border-gymshock-dark-500 bg-gymshock-dark-500/10 backdrop-blur-md hover:border-gymshock-dark-500 hover:bg-gymshock-dark-500/20"
+                    }`}
                 onClick={() => onSelect(levelKey)}
             >
                 <div className="p-6 space-y-4">
@@ -33,20 +31,20 @@ export default function LevelCard({ levelKey, level, isSelected, onSelect }: Lev
                     </div>
 
                     <div className="text-center">
-                        <h3 className="text-lg md:text-xl font-bold text-gray-900">{level.label}</h3>
-                        <p className="text-xs md:text-sm text-gray-600 mt-2">{level.description}</p>
+                        <h3 className="text-lg font-bold text-white">{level.label}</h3>
+                        <p className="text-sm text-gymshock-dark-400 mt-2">{level.description}</p>
                     </div>
 
                     {/* Botón para abrir Drawer */}
                     <div className="flex justify-center">
                         <Button
-                            variant="outline"
+                            variant="secondary"
                             size="sm"
                             onClick={(e) => {
                                 e.stopPropagation(); // evitar que active onSelect
                                 setDrawerOpen(true);
                             }}
-                            className="flex items-center gap-1"
+                            className="flex items-center gap-1 "
                             aria-label={`Más información sobre ${level.label}`}
                         >
                             <Info className="w-4 h-4" /> Info
@@ -67,8 +65,8 @@ export default function LevelCard({ levelKey, level, isSelected, onSelect }: Lev
                     <div className="p-6 space-y-4 ">
                         <ul className="space-y-2">
                             {level.features.map((feature, index) => (
-                                <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
-                                    <CheckCircle2 className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
+                                <li key={index} className="flex items-start gap-2 text-sm text-gymshock-dark-300">
+                                    <CheckCircle2 className="h-5 w-5 text-gymshock-primary-500 mt-1 flex-shrink-0" />
                                     {feature}
                                 </li>
                             ))}
@@ -76,7 +74,7 @@ export default function LevelCard({ levelKey, level, isSelected, onSelect }: Lev
                     </div>
                     <DrawerFooter>
                         <DrawerClose asChild>
-                            <Button variant="outline" className="w-full">
+                            <Button variant="secondary" className="bg-transparent border-2 border-gymshock-primary-600 text-gymshock-primary-600 hover:bg-gymshock-primary-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-gymshock-primary-300 font-medium px-6 py-4 rounded-xl shadow-lg shadow-gymshock-primary-600/20 w-full transition duration-300 ease-in-out hover:scale-105">
                                 Cerrar
                             </Button>
                         </DrawerClose>
