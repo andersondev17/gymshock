@@ -293,7 +293,8 @@ export default function AuthForm({ type }: AuthFormProps) {
 
                 <Button
                     type="submit"
-                    className="w-full bg-transparent border-2 border-gymshock-primary-600 text-gymshock-primary-600 hover:bg-gymshock-primary-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-gymshock-primary-300 font-medium text-lg px-6 py-4 rounded-xl shadow-gymshock-brand transition duration-300 ease-in-out hover:scale-105"
+                    variant="gymshock"
+                    className='w-full'
                     disabled={isLoading}
                 >
                     {isLoading ? (

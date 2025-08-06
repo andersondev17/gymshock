@@ -26,7 +26,7 @@ export default function FrequencySelector({ selectedFrequency, selectedLevel, on
                     {stepNumber}
                 </span>
                 <h2 className="text-xl font-semibold text-white">
-                    ¿Con qué frecuencia planeas entrenar?
+                    ¿Cuántas veces por semana quieres entrenar?
                 </h2>
             </div>
             

@@ -14,7 +14,7 @@ const buttonVariants = cva(
         secondary: "bg-gymshock-dark-100 text-gymshock-dark-900 hover:bg-gymshock-dark-200",
         ghost: "hover:bg-gymshock-dark-100 hover:text-gymshock-dark-900",
         link: "text-sm text-gray-400 hover:text-white underline hover:no-underline transition-colors",
-        gymshock: "bg-transparent border-2 border-gymshock-primary-600 text-gymshock-primary-600 hover:bg-gymshock-primary-700 hover:text-white focus:ring-4 focus:ring-gymshock-primary-300 rounded-xl shadow-gymshock-brand transition duration-300 hover:scale-105"
+        gymshock: "bg-gradient-to-r from-gymshock-primary-600 to-gymshock-energy-500 hover:from-gymshock-primary-700 hover:to-gymshock-energy-600 text-white px-10 py-5 rounded-xl font-bold text-sm md:text-lg lg:text-xl shadow-gymshock-brand hover:scale-105 transition-all duration-300"
       },
       size: {
         default: "h-10 px-4 py-2",

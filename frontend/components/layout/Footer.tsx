@@ -6,7 +6,6 @@ const Footer = () => {
 
   return (
     <footer className="relative bg-gymshock-dark-900 overflow-hidden min-h-screen flex flex-col">
-      {/* Background Effects - GymShock Identity */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-[8%] w-80 h-80 rounded-full bg-gymshock-primary-500/[0.08] blur-[120px]" />
         <div className="absolute bottom-40 right-[12%] w-96 h-96 rounded-full bg-gymshock-energy-500/[0.06] blur-[140px]" />
@@ -91,7 +90,7 @@ const Footer = () => {
           
           <div className="text-center">
             <div className="relative inline-block">
-              <h2 className="text-[120px] sm:text-[180px] md:text-[240px] lg:text-[300px] xl:text-[220px] font-black leading-[0.75] tracking-[-0.03em] select-none">
+              <h2 className="text-[65px] sm:text-[90px] md:text-[140px] lg:text-[190px] xl:text-[220px] font-black leading-[0.75] tracking-[-0.03em] select-none">
                 <span 
                   style={{
                     WebkitTextStroke: '2px white',
@@ -121,7 +120,7 @@ const Footer = () => {
             </div>
 
             <div className="mt-8 lg:mt-12">
-              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-gymshock-primary-500/30 bg-gymshock-primary-500/10 backdrop-blur-sm shadow-gymshock-energy">
+              <div className="inline-flex items-center gap-3 px-6 py-3  backdrop-blur-sm ">
                 <div className="w-2 h-2 bg-gymshock-primary-500 rounded-full animate-gymshock-pulse" />
                 <span className="text-gymshock-primary-400 text-sm lg:text-base font-medium tracking-wider uppercase">
                   FITNESS REDEFINED

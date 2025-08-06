@@ -98,7 +98,9 @@ const HeroBanner = () => {
             <Link href="/exercises" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="bg-transparent border-2 border-gymshock-primary-600 text-gymshock-primary-600 hover:bg-gymshock-primary-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-gymshock-primary-300 font-medium text-lg px-6 py-4 rounded-xl shadow-lg shadow-gymshock-primary-600/20 w-full transition duration-300 ease-in-out hover:scale-105"
+                variant="gymshock"
+                className="border-white font-medium text-lg px-6 py-4 rounded-xl w-full"
+
               >
                 Browse Exercises
               </Button>
@@ -139,7 +141,7 @@ const HeroBanner = () => {
               className="contents"
               style={{ opacity: 0 }}
             >
-              
+
 
               <div className="hidden lg:block absolute bottom-2 right-2 sm:bottom-8 sm:-right-24 bg-gymshock-dark-700 backdrop-blur-lg rounded-xl p-2 sm:p-3 shadow-xl">
                 <div className="text-xs text-gymshock-dark-300">Calories Burned</div>

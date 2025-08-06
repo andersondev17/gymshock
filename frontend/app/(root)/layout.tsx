@@ -22,7 +22,6 @@ const HomeLayout = ({ children }: { children: ReactNode }) => {
                 ease: "power2.out"
             });
 
-            // ✅ Simple chaining like Midudev
             tl.set("#main-layout", { opacity: 0, y: 20 })
                 .to("#main-layout", {
                     opacity: 1,
@@ -31,7 +30,6 @@ const HomeLayout = ({ children }: { children: ReactNode }) => {
                 });
         };
 
-        //  Reset scroll like Midudev
         window.scrollTo(0, 0);
         initPageTransition();
     }, [pathname]);

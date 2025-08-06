@@ -2,11 +2,10 @@
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import { useProgramBuilder } from '@/hooks/useProgramBuilder';
-import gsap from 'gsap';
 import { AlertCircle, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
 import FrequencySelector from './FrequencySelector';
 import GoalsSelector from './GoalsSelector';
 import LevelSelector from './LevelSelector';
@@ -15,29 +14,20 @@ import TimeSelector from './TimeSelector';
 
 export default function ProgramBuilder() {
     const builder = useProgramBuilder();
-    const contentRef = useRef<HTMLDivElement>(null);
-    const progressRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (progressRef.current) {
-            gsap.to(progressRef.current, {
-                width: `${(builder.currentStep / 5) * 100}%`,
-                duration: 0.6,
-                ease: "power2.out"
-            });
-        }
-    }, [builder.currentStep]);
+    const progressValue = (builder.currentStep / 5) * 100;
 
     return (
-        <div className="flex flex-col min-h-screen bg-gymshock-dark-900 text-white ">
-
-            <div className="absolute inset-0 bg-[url('/assets/images/pattern.png')] opacity-10 bg-repeat" />
-            {/* Progress Bar - GymShock Theme */}
-            <div className=" z-50 sticky top-0 bg-gymshock-dark-800 border-b border-gymshock-dark-700">
-                <div className="max-w-4xl mx-auto p-2 flex items-center gap-4">
+        <div className="flex flex-col min-h-screen">
+            {/* Progress bar */}
+            <header className="sticky top-0 z-50 bg-gymshock-dark-800/90 backdrop-blur-xl border-b border-gymshock-dark-700/50">
+                <div className="max-w-6xl mx-auto px-4  flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                        <Link href="/" className="p-2 rounded hover:bg-gymshock-primary-600/20 transition-colors" aria-label="Cerrar y volver a inicio">
-                            <X className="w-6 h-6 text-gymshock-primary-600" />
+                        <Link 
+                            href="/" 
+                            className="p-2 rounded-lg hover:bg-gymshock-primary-600/20 transition-all duration-200 group" 
+                            aria-label="Cerrar y volver a inicio"
+                        >
+                            <X className="w-6 h-6 text-gymshock-primary-600 group-hover:scale-110 transition-transform" />
                         </Link>
 
                         <Button
@@ -51,48 +41,40 @@ export default function ProgramBuilder() {
                         </Button>
                     </div>
 
-                    <div className="flex-1 h-2 bg-gymshock-dark-700 rounded-full overflow-hidden">
-                        <div
-                            ref={progressRef}
-                            className="h-full bg-gradient-to-r from-gymshock-primary-500 to-gymshock-primary-600 rounded-full"
-                            style={{ width: '0%' }}
-                        />
-                    </div>
+                    <Progress 
+                        value={progressValue}
+                        className="flex-1 h-3 bg-gymshock-dark-700/50 border border-gymshock-dark-600/30 [&>div]:bg-gradient-to-r [&>div]:from-gymshock-primary-500 [&>div]:to-gymshock-primary-600 [&>div]:shadow-lg [&>div]:shadow-gymshock-primary-500/20 [&>div]:transition-all [&>div]:duration-700 [&>div]:ease-out overflow-hidden rounded-full"
+                    />
 
-                    <span className="text-sm font-medium text-gymshock-dark-200">
-                        Paso {builder.currentStep} de 5
+                    <span className="text-sm font-medium text-gymshock-dark-200 bg-gymshock-dark-700/50 px-3 py-1 rounded-full">
+                        {builder.currentStep}/5
                     </span>
                 </div>
-            </div>
+            </header>
 
-            <main className="relative z-10 flex-grow max-w-4xl mx-auto p-2 md:p-6 pb-24 overflow-auto space-y-4">
-                  <header className="text-center space-y-4 py-8">
-                    
-                    <h1
-                        className="text-[45px] md:text-[60px] lg:text-[65px] font-bold leading-[0.9] tracking-tight"
-                        style={{
-                            WebkitTextStroke: '1.5px white',
-                            WebkitTextFillColor: 'transparent',
-                            color: 'transparent'
-                        }}
-                    >
-                        Encuentra tu <span className="text-gymshock-primary-600" style={{ WebkitTextFillColor: '#dc2626', color: '#dc2626' }}>Plan de Entreno</span>
+            <main className="flex-grow max-w-6xl mx-auto px-4 py-4 w-full">
+                <header className="text-center space-y-6 mb-12">
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
+                        Encuentra tu{' '}
+                        <span className="bg-gradient-to-r from-gymshock-primary-500 to-gymshock-primary-600 bg-clip-text text-transparent">
+                            Plan de Entreno
+                        </span>
                     </h1>
 
-                    <p className="text-xs md:text-sm lg:text-base text-gymshock-dark-300 max-w-2xl mx-auto">
-                        En 4 pasos simples, diseñamos un plan de entrenamiento
+                    <p className="text-sm md:text-base text-gymshock-dark-300 max-w-2xl mx-auto leading-relaxed">
+                        En 5 pasos simples, diseñamos un plan de entrenamiento 
                         que se adapte a tu nivel, objetivos y tiempo disponible.
                     </p>
                 </header>
 
                 {builder.error && (
-                    <Alert variant="destructive" className="mb-6 bg-gymshock-primary-950/50 border-gymshock-primary-800 text-gymshock-primary-200">
+                    <Alert variant="destructive" className="mb-8 bg-red-950/20 border-red-800/30 text-red-200 backdrop-blur-sm">
                         <AlertCircle className="h-4 w-4" />
                         <AlertDescription className="flex items-center justify-between">
                             {builder.error}
                             <button
                                 onClick={builder.clearError}
-                                className="text-sm underline hover:no-underline"
+                                className="text-sm underline hover:no-underline transition-all"
                                 aria-label="Cerrar error"
                             >
                                 Cerrar
@@ -101,7 +83,7 @@ export default function ProgramBuilder() {
                     </Alert>
                 )}
 
-                <div ref={contentRef} className="space-y-2">
+                <div className="space-y-8">
                     {builder.currentStep === 1 && (
                         <LevelSelector
                             selectedLevel={builder.selectedLevel}
@@ -147,14 +129,13 @@ export default function ProgramBuilder() {
                 </div>
             </main>
 
-            {/* Footer - Botones GymShock */}
-            <footer className="z-50 sticky bottom-0 bg-gymshock-dark-800 border-t border-gymshock-dark-700 p-2">
-                <div className="max-w-4xl mx-auto flex justify-between">
+            <footer className="sticky bottom-0 z-50 bg-gymshock-dark-800/90 backdrop-blur-xl border-t border-gymshock-dark-700/50">
+                <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
                     <Button
                         variant="outline"
                         onClick={() => builder.goToStep(builder.currentStep - 1)}
                         disabled={!builder.canGoBack}
-                        className="gap-2 border-gymshock-dark-600 text-white hover:bg-white/10 hover:text-white disabled:opacity-40"
+                        className="gap-2 border-gymshock-dark-600/50 text-white hover:bg-white/10 hover:text-white hover:border-white/20 disabled:opacity-40 transition-all duration-200"
                     >
                         <ChevronLeft className="h-4 w-4" />
                         Anterior
@@ -162,9 +143,10 @@ export default function ProgramBuilder() {
 
                     {builder.currentStep < 5 && (
                         <Button
-                            variant="gymshock"
                             onClick={() => builder.goToStep(builder.currentStep + 1)}
                             disabled={!builder.canGoForward}
+                            variant="gymshock"
+                            className="gap-2"
                         >
                             Siguiente
                             <ChevronRight className="h-4 w-4" />

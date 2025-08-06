@@ -37,7 +37,7 @@ export function useProgramActions() {
         }
     }, [state]);
 
-    const saveProfile = useCallback(async (profileData: ProfileData): Promise<boolean> => {
+     const saveProfile = useCallback(async (profileData: ProfileData): Promise<boolean> => {
         if (!state.user) {
             toast.error('Debes iniciar sesión para guardar tu programa');
             router.push('/login?redirect=/programs');
@@ -48,14 +48,21 @@ export function useProgramActions() {
         state.setError(null);
 
         try {
+            //Flow: Profile → Generate → Redirect
+            console.log('📝 Saving profile and generating program...');
+            
             const { profile, program } = await programService.saveProfile(profileData);
+            
             state.setProfile(profile);
             state.setProgram(program);
-            toast.success('¡Programa personalizado creado!');
+            
+            toast.success('¡Programa personalizado creado! 🎯');
+            
             router.push('/programs/myprogram');
             return true;
+            
         } catch (error: any) {
-            const message = error.message || 'Error al guardar el perfil';
+            const message = error.message || 'Error al crear el programa';
             state.setError(message);
             toast.error(message);
             return false;
