@@ -40,18 +40,7 @@ html {
   color: white;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #FF2625;
-  border-radius: 6px;
-}
 
 /* Componentes de navegación */
 .right-arrow,

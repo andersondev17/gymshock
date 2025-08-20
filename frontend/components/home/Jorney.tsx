@@ -1,90 +1,181 @@
 'use client';
-import { JourneyProps } from '@/types/exercise';
-import { animate } from 'animejs';
+
+import { Exercise, JourneyProps } from '@/types/exercise';
+import { getExercises } from '@/utils/fetchData';
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { ArrowRight, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import BlurFadeText from '../magicui/blur-fade-text';
 import { Button } from '../ui/button';
 import AppPreview from './AppPreview';
 
 const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: JourneyProps) => {
-    const sectionRef = useRef<HTMLElement>(null);
-    const animationTriggered = useRef(false);
+    const [currentIndex, setCurrentIndex] = useState(1);
+
+    const [exercises, setExercises] = useState<Exercise[]>([]);
+    const totalPhotos = 4;
+    const nextPhotoRef = useRef<HTMLImageElement>(null);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting && !animationTriggered.current) {
-                animate('.benefit-item', {
-                    opacity: [0, 1],
-                    translateX: [20, 0],
-                    delay: (_, i) => i * 150,
-                    duration: 600,
-                    easing: 'easeOutQuad'
-                });
-                animationTriggered.current = true;
+        const fetchExercises = async () => {
+            try {
+                const data = await getExercises({ limit: 4 });
+                setExercises(data);
+            } catch (error) {
+                console.error('Error fetching exercises:', error);
             }
-        }, { threshold: 0.2 });
-
-        sectionRef.current && observer.observe(sectionRef.current);
-        return () => observer.disconnect();
+        };
+        fetchExercises();
     }, []);
 
+    // 0 % 4 = 0 + 1 => 1
+    // 1 % 4 = 1 + 1 => 2
+    // 2 % 4 = 2 + 1 => 3
+    // 3 % 4 = 3 + 1 => 4
+    // 4 % 4 = 0 + 1 => 1
+    const handleMiniPhotoClick = () => {
+        setCurrentIndex((prevIndex) => (prevIndex % totalPhotos) + 1);
+    };
+
+    useGSAP(
+        () => {
+            if (currentIndex > 1) {
+                gsap.set("#next-image", { visibility: "visible" });
+                gsap.to("#next-image", {
+                    transformOrigin: "center center",
+                    scale: 1,
+                    width: "100%",
+                    height: "100%",
+                    duration: 1,
+                    ease: "power1.inOut",
+                });
+                gsap.from("#current-image", {
+                    transformOrigin: "center center",
+                    scale: 0,
+                    duration: 1.5,
+                    ease: "power1.inOut",
+                });
+            }
+        },
+        {
+            dependencies: [currentIndex],
+            revertOnUpdate: true,
+        }
+    );
+
+    const getExerciseGif = (index: number) => exercises[index - 1]?.gifUrl || '';
+
     return (
-        <section ref={sectionRef} className="bg-gymshock-dark-900 min-h-screen relative w-screen overflow-hidden">
-            <div className="absolute inset-0 bg-[url('/assets/images/pattern.png')] opacity-[0.02] bg-repeat pointer-events-none" />   
-            <div className="absolute top-0 left-0 w-96 h-96 bg-gymshock-primary-600/3 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-gymshock-primary-500/2 rounded-full blur-3xl" /> 
-            <div className="relative max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
-                <div className="flex flex-col lg:flex-row items-center gap-12">
-                    <div className="flex-1 space-y-8">
-                        <div className="bg-gymshock-primary-600/20 inline-block px-4 py-1 rounded-full text-gymshock-primary-500 text-sm border border-gymshock-primary-600/30">
-                            💪 FITNESS JOURNEY
+        <main
+            className="relative min-h-screen w-screen overflow-hidden bg-gymshock-dark-900"
+            aria-label="Fitness journey"
+        >
+            <div className="absolute inset-0 bg-[url('/assets/images/pattern.png')] opacity-35 bg-repeat" />
+
+            <article className="relative max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <section className="lg:col-span-5 space-y-8">
+                        <div className="space-y-4">
+                            <div className="inline-flex items-center gap-2 bg-gymshock-primary-600/20 text-gymshock-primary-500 px-4 py-2 rounded-full text-sm font-medium border border-gymshock-primary-600/30">
+                                <div className="w-2 h-2 bg-gymshock-primary-500 rounded-full animate-pulse" />
+                                💪 FITNESS REDEFINED
+                            </div>
+
+                            <BlurFadeText
+                                delay={0.2}
+                                className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight"
+                                yOffset={8}
+                                text={title}
+                            />
+
+                            <p className="text-xl text-gymshock-dark-300 leading-relaxed max-w-lg">
+                                {subtitle}
+                            </p>
                         </div>
 
-                        <BlurFadeText 
-                            delay={0.2} 
-                            className="text-4xl md:text-5xl font-bold text-white" 
-                            yOffset={8} 
-                            text={title} 
-                        />
-
-                        <p className="text-gymshock-dark-300 mb-8 max-w-full sm:max-w-[600px] text-base sm:text-lg leading-relaxed">
-                            {subtitle}
-                        </p>
-
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {benefits.map((benefit, i) => (
-                                <div key={i} className="benefit-item opacity-0">
-                                    <div className="flex items-start gap-3 p-3 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10">
-                                        <CheckCircle className="text-gymshock-primary-500 mt-1 flex-shrink-0" />
-                                        <span className="text-gymshock-dark-200">{benefit.text}</span>
+                                <div key={i} className="benefit-item">
+                                    <div className="flex items-start gap-3 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-gymshock-primary-500/20">
+                                        <CheckCircle className="text-gymshock-primary-500 mt-0.5 flex-shrink-0 h-5 w-5" />
+                                        <span className="text-gymshock-dark-200 text-sm font-medium">{benefit.text}</span>
                                     </div>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4 w-full">
-                            <Link href={ctaPrimary.href} className="w-full sm:w-auto">
-                                <Button className="gap-2 shadow-lg shadow-gymshock-primary-600/20 w-full hover:scale-105 transition-transform" variant="gymshock">
+                        <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                            <Link href={ctaPrimary.href} aria-label={ctaPrimary.text}>
+                                <Button className="gap-2 bg-gymshock-primary-600 hover:bg-gymshock-primary-700 text-white font-semibold px-8 py-4 text-base shadow-lg shadow-gymshock-primary-600/20 transition-all w-full sm:w-auto group">
                                     {ctaPrimary.text}
-                                    <ArrowRight className="h-5 w-5" />
+                                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                                 </Button>
                             </Link>
-                            <Link href={ctaSecondary.href} className="w-full sm:w-auto">
-                                <Button 
-                                    variant="outline"
-                                    className="border-white/30 text-white bg-white/5 backdrop-blur-sm hover:bg-white/10 hover:border-white/50 font-medium text-lg px-6 py-4 rounded-xl w-full transition-all duration-200"
-                                >
+                            <Link href={ctaSecondary.href} aria-label={ctaSecondary.text}>
+                                <Button variant="outline" className="border-white/30 text-white bg-transparent hover:bg-white/10 font-semibold px-8 py-4 text-base w-full sm:w-auto">
                                     {ctaSecondary.text}
                                 </Button>
                             </Link>
                         </div>
-                    </div>
-                    <AppPreview />
+                    </section>
+
+                    {/* Exercise Preview  */}
+                    <aside className="lg:col-span-7 flex justify-center lg:justify-end">
+                        <div className="relative w-[400px] h-[500px] lg:w-[480px] lg:h-[600px]">
+                            <div
+                                id="exercise-frame"
+                                className="relative z-10 h-full w-full overflow-hidden rounded-3xl bg-gymshock-dark-700/20 backdrop-blur-sm border border-white/10 shadow-2xl"
+                            >
+                                {/* Background Exercise */}
+                                <Image
+                                    src={getExerciseGif(currentIndex === totalPhotos - 1 ? 1 : currentIndex)}
+                                    alt="Background exercise"
+                                    fill
+                                    className="absolute left-0 top-0 object-cover object-center"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                />
+
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 size-64 cursor-pointer overflow-hidden rounded-2xl">
+                                    <AppPreview>
+                                        <div
+                                            onClick={handleMiniPhotoClick}
+                                            className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100 h-full w-full"
+                                        >
+                                            <Image
+                                                ref={nextPhotoRef}
+                                                src={getExerciseGif((currentIndex % totalPhotos) + 1)}
+                                                alt="Next exercise preview"
+                                                fill
+                                                className="origin-center scale-150 object-cover object-center rounded-lg"
+                                                sizes="(max-width: 768px) 100vw, 50vw"
+                                                id="current-image"
+                                            />
+                                        </div>
+                                    </AppPreview>
+                                </div>
+
+                                {/* Next Exercise Hidden */}
+                                <Image
+                                    src={getExerciseGif(currentIndex)}
+                                    alt="Next exercise"
+                                    fill
+                                    className="invisible absolute z-20 size-64 object-cover object-center"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    id="next-image"
+                                />
+
+                                <h2 className="absolute bottom-5 right-5 z-40 text-gymshock-dark-600 font-bold text-lg">
+                                    GYM<span className="text-gymshock-primary-500">SHOCK</span>
+                                </h2>
+                            </div>
+                        </div>
+                    </aside>
                 </div>
-            </div>
-        </section>
+            </article>
+        </main>
     );
 };
 

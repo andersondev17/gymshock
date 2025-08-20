@@ -1,3 +1,4 @@
+
 export const adminSideBarLinks = [
     {
         img: "/assets/icons/admin/home.svg",
@@ -87,12 +88,12 @@ export const RecentActivity = [
  */
 export const JOURNEY_PROPS = {
     title: "Get Started with Your Fitness Journey",
-    subtitle: "Begin your transformation today with personalized workouts, expert guidance, and a supportive community to help you achieve your fitness goals.",
+    subtitle: "Begin your transformation today",
     benefits: [
-        { text: "Access to 1300+ exercises with detailed instructions" },
-        { text: "Personalized recommendations based on your goals" },
-        { text: "Create and save custom workout routines" },
-        { text: "Join a community of 10,000+ fitness enthusiasts" }
+        { text: "Access to 1300+ exercises" },
+        { text: "Personalized recommendations" },
+        { text: "Save and share custom workout routines" },
+        { text: "Join a community of fitness enthusiasts" }
     ],
     ctaPrimary: {
         text: "Try GymShock for Free",
@@ -156,4 +157,13 @@ export const FOOTER_CONFIG = {
         placeholder: "Email"
     }
 };
+export interface AppPreviewProps {
+    children: React.ReactNode;
+    onClick?: () => void
+}
 
+export const STATS_CONFIG = [
+    { icon: 'Clock', label: 'Time', key: 'time', className: 'text-blue-500' },
+    { icon: 'TrendingUp', label: 'Calories', key: 'calories', className: 'text-green-500' },
+    { icon: '🔥', label: 'Streak', key: 'streak', className: 'text-orange-500', suffix: 'd' }
+] as const;

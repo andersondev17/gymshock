@@ -1,4 +1,3 @@
-// components/ux/NeuroFlow.tsx - FILOSOFÍA MIDUDEV: Máximo impacto, mínimo código
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -36,14 +35,12 @@ const NeuroFlow = (props: NeuroFlowProps) => {
     const [showWelcomeReward, setShowWelcomeReward] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
 
-    // 🎉 WELCOME EFFECT
     useEffect(() => {
         if (props.isOpen && props.currentStep === 0) {
             setTimeout(() => {
                 setShowWelcomeReward(true);
                 playSound();
                 toast.success("🎉 ¡Bienvenido a GymShock!", {
-                    description: `Atleta #${props.config.stats.userCount.toLocaleString()} registrado`,
                     duration: 3000,
                 });
             }, 1500);

@@ -1,5 +1,5 @@
 import { useAuth } from '@/context/AuthProvider';
-import { FitnessProfile, WorkoutProgram } from '@/services/programService';
+import { FitnessProfile, WorkoutProgram } from '@/types/profile';
 import { useCallback, useState } from 'react';
 
 interface ProgramState {
