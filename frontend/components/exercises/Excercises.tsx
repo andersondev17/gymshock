@@ -63,7 +63,7 @@ const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-500" />
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gymshock-primary-500" />
       </div>
     );
   }
@@ -72,8 +72,8 @@ const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
   if (!exercises.length) {
     return (
       <div className="text-center py-10">
-        <p className="text-lg text-gray-600">No exercises found 😔</p>
-        <p className="text-sm text-gray-500 mt-2">Try a different body part or search term</p>
+        <p className="text-lg text-white">No exercises found 😔</p>
+        <p className="text-sm text-gymshock-dark-300 mt-2">Try a different body part or search term</p>
       </div>
     );
   }
@@ -82,29 +82,29 @@ const Exercises = ({ exercises, setExercises, bodyPart }: ExercisesProps) => {
     <div 
       id="exercises-list" 
       className={`max-w-7xl mx-auto px-4 py-12 transition-all duration-500 ${
-        highlightResults ? 'bg-red-50' : ''
+        highlightResults ? 'bg-gymshock-primary-600/10 backdrop-blur-sm rounded-xl' : ''
       }`}
     >
       {/* Header section */}
       <div className={`mb-10 transition-all duration-300 ${
-        highlightResults ? 'bg-red-50 p-6 rounded-xl shadow-sm' : ''
+        highlightResults ? 'bg-gymshock-primary-600/20 backdrop-blur-xl p-6 rounded-xl shadow-lg border border-gymshock-primary-600/30' : ''
       }`}>
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2 flex items-center">
+            <h2 className="text-3xl font-bold text-white mb-2 flex items-center">
               Showing Results
               {bodyPart !== 'all' && (
-                <span className="ml-2 bg-red-50 text-red-600 px-3 py-1 rounded-full text-lg font-medium">
-              {bodyPart}
-              </span>
+                <span className="ml-2 bg-gymshock-primary-600/20 text-gymshock-primary-400 px-3 py-1 rounded-full text-lg font-medium border border-gymshock-primary-600/30">
+                  {bodyPart}
+                </span>
               )}
             </h2>
-            <p className="text-gray-500">Discover {exercises.length} exercises to enhance your fitness journey</p>
+            <p className="text-gymshock-dark-300">Discover {exercises.length} exercises to enhance your fitness journey</p>
           </div>
         </div>
-        <div className="mt-6 h-1 bg-gray-100 rounded-full w-full overflow-hidden">
+        <div className="mt-6 h-1 bg-gymshock-dark-700/50 rounded-full w-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-gymshock-primary-500 to-gymshock-primary-600 rounded-full transition-all duration-500 shadow-lg shadow-gymshock-primary-500/20"
             style={{ width: `${(exercises.length / 1300) * 100}%` }}
           ></div>
         </div>

@@ -48,7 +48,7 @@ export const PROGRAM_LEVELS = {
 
 export const FITNESS_GOALS = [
     {
-        id: 'weight-loss',
+        id: 'fat-loss',
         label: 'Perder peso',
         emoji: '🔥',
         color: 'bg-red-100 text-red-600',
@@ -91,6 +91,45 @@ export const FITNESS_GOALS = [
     }
 ] as const;
 
+export const FREQUENCY_OPTIONS = [
+    {
+        value: '1x',
+        label: '1x por semana',
+        sessions: 1,
+        description: 'Mantenimiento básico',
+        minDuration: 45,
+        maxDuration: 60,
+        recommended: ['beginner']
+    },
+    {
+        value: '2x',
+        label: '2x por semana',
+        sessions: 2,
+        description: 'Progreso constante',
+        minDuration: 30,
+        maxDuration: 45,
+        recommended: ['beginner', 'intermediate']
+    },
+    {
+        value: '3x',
+        label: '3x por semana',
+        sessions: 3,
+        description: 'Desarrollo efectivo',
+        minDuration: 30,
+        maxDuration: 45,
+        recommended: ['intermediate']
+    },
+    {
+        value: '4x+',
+        label: '4x o más por semana',
+        sessions: 4,
+        description: 'Máximo progreso',
+        minDuration: 30,
+        maxDuration: 60,
+        recommended: ['intermediate', 'advanced']
+    }
+] as const;
+
 export const TIME_OPTIONS = [
     {
         value: '20-30',
@@ -129,4 +168,4 @@ export const VALIDATION_RULES = {
 
 export type ProgramLevel = keyof typeof PROGRAM_LEVELS;
 export type FitnessGoal = typeof FITNESS_GOALS[number];
-export type TimeOption = typeof TIME_OPTIONS[number];
+export type FrequencyOption = typeof FREQUENCY_OPTIONS[number];

@@ -29,15 +29,15 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange, maxPageButt
     const pageButtons = getPageButtons();
 
     return (
-        <div className="flex justify-center items-center ">
-            <div className="inline-flex bg-white rounded-lg shadow-md p-1 border border-gray-100">
+        <div className="flex justify-center items-center">
+            <div className="inline-flex bg-gymshock-dark-800/60 backdrop-blur-xl rounded-xl shadow-gymshock-elevated p-2 border border-gymshock-dark-700/40">
                 {/* Previous button */}
                 <button
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-3 py-2 rounded-lg mx-1 flex items-center justify-center font-medium text-sm ${currentPage === 1
-                        ? 'text-gray-300 cursor-not-allowed'
-                        : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                    className={`px-4 py-2.5 rounded-lg mx-1 flex items-center justify-center font-medium text-sm transition-all duration-200 ${currentPage === 1
+                        ? 'text-gymshock-dark-500 cursor-not-allowed'
+                        : 'text-gymshock-dark-200 hover:bg-gymshock-dark-700/60 hover:text-white'
                         }`}
                     aria-label="Previous page"
                 >
@@ -49,15 +49,15 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange, maxPageButt
                     <>
                         <button
                             onClick={() => onPageChange(1)}
-                            className={`w-10 h-10 rounded-lg mx-1 flex items-center justify-center font-medium text-sm ${currentPage === 1
-                                ? 'bg-red-600 text-white'
-                                : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                            className={`w-11 h-11 rounded-lg mx-1 flex items-center justify-center font-medium text-sm transition-all duration-200 ${currentPage === 1
+                                ? 'bg-gradient-to-r from-gymshock-primary-500 to-gymshock-primary-600 text-white shadow-gymshock-glow'
+                                : 'text-gymshock-dark-200 hover:bg-gymshock-dark-700/60 hover:text-white'
                                 }`}
                         >
                             1
                         </button>
                         {pageButtons[0] > 2 && (
-                            <span className="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+                            <span className="w-11 h-11 flex items-center justify-center text-gymshock-dark-400">...</span>
                         )}
                     </>
                 )}
@@ -67,9 +67,9 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange, maxPageButt
                     <button
                         key={page}
                         onClick={() => onPageChange(page)}
-                        className={`w-10 h-10 rounded-lg mx-1 flex items-center justify-center font-medium text-sm transition-colors duration-300 ${currentPage === page
-                            ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md'
-                            : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                        className={`w-11 h-11 rounded-lg mx-1 flex items-center justify-center font-medium text-sm transition-all duration-300 ${currentPage === page
+                            ? 'bg-gradient-to-r from-gymshock-primary-500 to-gymshock-primary-600 text-white shadow-gymshock-glow scale-110'
+                            : 'text-gymshock-dark-200 hover:bg-gymshock-dark-700/60 hover:text-white hover:scale-105'
                             }`}
                     >
                         {page}
@@ -80,13 +80,13 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange, maxPageButt
                 {pageButtons[pageButtons.length - 1] < totalPages && (
                     <>
                         {pageButtons[pageButtons.length - 1] < totalPages - 1 && (
-                            <span className="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+                            <span className="w-11 h-11 flex items-center justify-center text-gymshock-dark-400">...</span>
                         )}
                         <button
                             onClick={() => onPageChange(totalPages)}
-                            className={`w-10 h-10 rounded-lg mx-1 flex items-center justify-center font-medium text-sm ${currentPage === totalPages
-                                ? 'bg-red-600 text-white'
-                                : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                            className={`w-11 h-11 rounded-lg mx-1 flex items-center justify-center font-medium text-sm transition-all duration-200 ${currentPage === totalPages
+                                ? 'bg-gradient-to-r from-gymshock-primary-500 to-gymshock-primary-600 text-white shadow-gymshock-glow'
+                                : 'text-gymshock-dark-200 hover:bg-gymshock-dark-700/60 hover:text-white'
                                 }`}
                         >
                             {totalPages}
@@ -97,9 +97,9 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange, maxPageButt
                 <button
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className={`px-3 py-2 rounded-lg mx-1 flex items-center justify-center font-medium text-sm ${currentPage === totalPages
-                        ? 'text-gray-300 cursor-not-allowed'
-                        : 'text-gray-700 hover:bg-red-50 hover:text-red-600'
+                    className={`px-4 py-2.5 rounded-lg mx-1 flex items-center justify-center font-medium text-sm transition-all duration-200 ${currentPage === totalPages
+                        ? 'text-gymshock-dark-500 cursor-not-allowed'
+                        : 'text-gymshock-dark-200 hover:bg-gymshock-dark-700/60 hover:text-white'
                         }`}
                     aria-label="Next page"
                 >

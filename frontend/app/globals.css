@@ -40,18 +40,7 @@ html {
   color: white;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #FF2625;
-  border-radius: 6px;
-}
 
 /* Componentes de navegación */
 .right-arrow,
@@ -326,4 +315,267 @@ html {
 /* Mejora del gradiente de fondo */
 .auth-gradient {
   background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+}
+
+/* ========== APP PREVIEW 3D EFFECTS (Awwards Level) ========== */
+
+.perspective-1000 {
+  perspective: 1000px;
+  perspective-origin: center center;
+}
+
+.app-preview-container {
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.app-preview-card {
+  width: 320px;
+  height: 320px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 24px;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.1),
+    0 4px 20px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
+  backdrop-filter: blur(20px);
+}
+
+.app-preview-gif-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(45deg, #f1f5f9, #e2e8f0);
+}
+
+.app-preview-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg, 
+    rgba(220, 38, 38, 0) 0%, 
+    rgba(220, 38, 38, 0.1) 100%
+  );
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-preview-container:hover .app-preview-overlay {
+  opacity: 1;
+  backdrop-filter: blur(2px);
+}
+
+.app-preview-hint {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.app-preview-container:hover .app-preview-hint {
+  transform: translateY(0);
+}
+
+.app-preview-hint-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  letter-spacing: 0.5px;
+}
+
+/* Floating particles for premium feel */
+.app-preview-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(45deg, #dc2626, #ef4444);
+  border-radius: 50%;
+  opacity: 0;
+  animation: float-particle 8s infinite ease-in-out;
+}
+
+.particle-1 {
+  top: 20%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.particle-2 {
+  top: 60%;
+  right: 20%;
+  animation-delay: -2s;
+}
+
+.particle-3 {
+  bottom: 30%;
+  left: 25%;
+  animation-delay: -4s;
+}
+
+@keyframes float-particle {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(0);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
+}
+
+/* Premium side label */
+.app-preview-label {
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 25px rgba(220, 38, 38, 0.3),
+    0 3px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.app-preview-label-text {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: capitalize;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Counter with glow effect */
+.app-preview-counter {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.app-preview-counter-text {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Hover glow effect */
+.app-preview-container:hover .app-preview-card {
+  box-shadow: 
+    0 20px 60px rgba(220, 38, 38, 0.15),
+    0 10px 40px rgba(0, 0, 0, 0.1),
+    0 0 40px rgba(220, 38, 38, 0.1);
+}
+
+/* Loading state */
+.app-preview-container.animate-pulse {
+  width: 320px;
+  height: 320px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 24px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Animación de partículas */
+@keyframes float-particle {
+  0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
+  20% { opacity: 1; transform: translateY(-10px) scale(1); }
+  80% { opacity: 1; transform: translateY(-20px) scale(1); }
+}
+.mask-clip-path {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(45deg, #dc2626, #ef4444);
+  border-radius: 50%;
+  opacity: 0;
+  animation: float-particle 8s infinite ease-in-out;
+}
+
+/* Transiciones para animación de cambio */
+.app-preview-gif-container {
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.animate-out {
+  transform: scale(0.8) rotateY(90deg);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+@keyframes float-particle {
+  0%, 100% { 
+    opacity: 0; 
+    transform: translateY(0) scale(0); 
+  }
+  20% { 
+    opacity: 1; 
+    transform: translateY(-10px) scale(1); 
+  }
+  80% { 
+    opacity: 1; 
+    transform: translateY(-20px) scale(1); 
+  }
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(45deg, #dc2626, #ef4444);
+  border-radius: 50%;
+  opacity: 0;
+  animation: float-particle 8s infinite ease-in-out;
 }
