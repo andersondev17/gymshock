@@ -4,7 +4,7 @@ import { Exercise } from '@/types/exercise';
 import { getSimilarExercises } from '@/utils/fetchData';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import ExerciseCard from '../ui/ExerciseCard';
+import { ExerciseCard } from '../ui';
 
 interface SimilarExercisesProps {
   id: string;

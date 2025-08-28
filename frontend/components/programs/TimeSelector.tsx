@@ -10,19 +10,19 @@ interface Props {
     stepNumber: number;
 }
 
-export default function TimeSelector({ selectedTime, onSelect, stepNumber }: Props) {
+export function TimeSelector({ selectedTime, onSelect, stepNumber }: Props) {
     return (
-        <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6">
-            <div className="flex items-center gap-3 mb-6">
+        <main className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6">
+            <header className="flex items-center gap-3 mb-6">
                 <span className="bg-gymshock-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold">
                     {stepNumber}
                 </span>
                 <h2 className="text-xl font-semibold text-white">
                     Seleccione tiempo disponible para entrenar
                 </h2>
-            </div>
+            </header>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {TIME_OPTIONS.map((option) => (
                     <button
                         key={option.value}
@@ -37,7 +37,7 @@ export default function TimeSelector({ selectedTime, onSelect, stepNumber }: Pro
                         <span className="font-medium text-white text-sm">{option.label}</span>
                     </button>
                 ))}
-            </div>
-        </div>
+            </section>
+        </main>
     );
 }

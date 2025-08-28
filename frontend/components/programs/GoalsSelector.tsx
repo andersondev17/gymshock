@@ -9,7 +9,7 @@ interface Props {
     stepNumber: number;
 }
 
-export default function GoalsSelector({ selectedGoals, onToggle, stepNumber }: Props) {
+export function GoalsSelector({ selectedGoals, onToggle, stepNumber }: Props) {
     return (
         <div className="bg-gymshock-dark-600 backdrop-blur-md rounded-xl border border-white/20 p-6">
             <div className="flex items-center gap-3 mb-6">

@@ -12,67 +12,83 @@ import BlurFadeText from '../magicui/blur-fade-text';
 import { Button } from '../ui/button';
 import AppPreview from './AppPreview';
 
-const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: JourneyProps) => {
-    const [currentIndex, setCurrentIndex] = useState(1);
-
+// Hook separado para la lógica de ejercicios (SRP)
+function useExercises(limit: number = 4) {
     const [exercises, setExercises] = useState<Exercise[]>([]);
-    const totalPhotos = 4;
-    const nextPhotoRef = useRef<HTMLImageElement>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchExercises = async () => {
             try {
-                const data = await getExercises({ limit: 4 });
+                const data = await getExercises({ limit });
                 setExercises(data);
             } catch (error) {
                 console.error('Error fetching exercises:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
-        fetchExercises();
-    }, []);
 
-    // 0 % 4 = 0 + 1 => 1
-    // 1 % 4 = 1 + 1 => 2
-    // 2 % 4 = 2 + 1 => 3
-    // 3 % 4 = 3 + 1 => 4
-    // 4 % 4 = 0 + 1 => 1
+        fetchExercises();
+    }, [limit]);
+
+    return { exercises, isLoading };
+}
+
+// Hook separado para la lógica de animaciones (SRP)
+function useExerciseAnimation(exercises: Exercise[]) {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const exerciseFrameRef = useRef<HTMLDivElement>(null);
+
     const handleMiniPhotoClick = () => {
-        setCurrentIndex((prevIndex) => (prevIndex % totalPhotos) + 1);
+        if (exercises.length === 0) return;
+        setCurrentIndex((prev) => (prev + 1) % exercises.length);
     };
 
-    useGSAP(
-        () => {
-            if (currentIndex > 1) {
-                gsap.set("#next-image", { visibility: "visible" });
-                gsap.to("#next-image", {
-                    transformOrigin: "center center",
-                    scale: 1,
-                    width: "100%",
-                    height: "100%",
-                    duration: 1,
-                    ease: "power1.inOut",
-                });
-                gsap.from("#current-image", {
-                    transformOrigin: "center center",
-                    scale: 0,
-                    duration: 1.5,
-                    ease: "power1.inOut",
-                });
-            }
-        },
-        {
-            dependencies: [currentIndex],
-            revertOnUpdate: true,
-        }
-    );
+    useGSAP(() => {
+        if (exercises.length <= 1) return;
 
-    const getExerciseGif = (index: number) => exercises[index - 1]?.gifUrl || '';
+        const nextImage = document.getElementById("next-image");
+        const currentImage = document.getElementById("current-image");
+
+        if (!nextImage || !currentImage) return;
+
+        gsap.set(nextImage, { visibility: "visible" });
+        gsap.to(nextImage, {
+            transformOrigin: "center center",
+            scale: 1,
+            duration: 1,
+            ease: "power1.inOut",
+        });
+
+        gsap.from(currentImage, {
+            transformOrigin: "center center",
+            scale: 0,
+            duration: 1.5,
+            ease: "power1.inOut",
+        });
+    }, { dependencies: [currentIndex, exercises.length] });
+
+    return { currentIndex, exerciseFrameRef, handleMiniPhotoClick };
+}
+
+const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: JourneyProps) => {
+    const { exercises, isLoading } = useExercises(4);
+    const { currentIndex, exerciseFrameRef, handleMiniPhotoClick } = useExerciseAnimation(exercises);
+
+    if (isLoading) {
+        return (
+            <main className="relative min-h-screen w-screen overflow-hidden bg-gymshock-dark-900 flex items-center justify-center">
+                <div className="text-white">Loading exercises...</div>
+            </main>
+        );
+    }
+
+    const currentExercise = exercises[currentIndex];
+    const nextExercise = exercises[(currentIndex + 1) % exercises.length];
 
     return (
-        <main
-            className="relative min-h-screen w-screen overflow-hidden bg-gymshock-dark-900"
-            aria-label="Fitness journey"
-        >
+        <main className="relative min-h-screen w-screen overflow-hidden bg-gymshock-dark-900" aria-label="Fitness journey">
             <div className="absolute inset-0 bg-[url('/assets/images/pattern.png')] opacity-35 bg-repeat" />
 
             <article className="relative max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8">
@@ -98,11 +114,9 @@ const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: Journe
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {benefits.map((benefit, i) => (
-                                <div key={i} className="benefit-item">
-                                    <div className="flex items-start gap-3 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-gymshock-primary-500/20">
-                                        <CheckCircle className="text-gymshock-primary-500 mt-0.5 flex-shrink-0 h-5 w-5" />
-                                        <span className="text-gymshock-dark-200 text-sm font-medium">{benefit.text}</span>
-                                    </div>
+                                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 transition-all duration-300 hover:shadow-lg hover:shadow-gymshock-primary-500/20">
+                                    <CheckCircle className="text-gymshock-primary-500 mt-0.5 flex-shrink-0 h-5 w-5" />
+                                    <span className="text-gymshock-dark-200 text-sm font-medium">{benefit.text}</span>
                                 </div>
                             ))}
                         </div>
@@ -122,50 +136,53 @@ const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: Journe
                         </div>
                     </section>
 
-                    {/* Exercise Preview  */}
                     <aside className="lg:col-span-7 flex justify-center lg:justify-end">
                         <div className="relative w-[400px] h-[500px] lg:w-[480px] lg:h-[600px]">
                             <div
-                                id="exercise-frame"
+                                ref={exerciseFrameRef}
                                 className="relative z-10 h-full w-full overflow-hidden rounded-3xl bg-gymshock-dark-700/20 backdrop-blur-sm border border-white/10 shadow-2xl"
                             >
-                                {/* Background Exercise */}
-                                <Image
-                                    src={getExerciseGif(currentIndex === totalPhotos - 1 ? 1 : currentIndex)}
-                                    alt="Background exercise"
-                                    fill
-                                    className="absolute left-0 top-0 object-cover object-center"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                />
+                                {currentExercise?.gifUrl && (
+                                    <Image
+                                        src={currentExercise.gifUrl}
+                                        alt="Background exercise"
+                                        fill
+                                        className="absolute left-0 top-0 object-cover object-center"
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                        priority
+                                    />
+                                )}
 
                                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 size-64 cursor-pointer overflow-hidden rounded-2xl">
                                     <AppPreview>
                                         <div
                                             onClick={handleMiniPhotoClick}
-                                            className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100 h-full w-full"
+                                            className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100 h-full w-full relative"
                                         >
-                                            <Image
-                                                ref={nextPhotoRef}
-                                                src={getExerciseGif((currentIndex % totalPhotos) + 1)}
-                                                alt="Next exercise preview"
-                                                fill
-                                                className="origin-center scale-150 object-cover object-center rounded-lg"
-                                                sizes="(max-width: 768px) 100vw, 50vw"
-                                                id="current-image"
-                                            />
+                                            {nextExercise?.gifUrl && (
+                                                <Image
+                                                    src={nextExercise.gifUrl}
+                                                    alt="Next exercise preview"
+                                                    fill
+                                                    className="origin-center scale-150 object-cover object-center rounded-lg"
+                                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                                    id="current-image"
+                                                />
+                                            )}
                                         </div>
                                     </AppPreview>
                                 </div>
 
-                                {/* Next Exercise Hidden */}
-                                <Image
-                                    src={getExerciseGif(currentIndex)}
-                                    alt="Next exercise"
-                                    fill
-                                    className="invisible absolute z-20 size-64 object-cover object-center"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                    id="next-image"
-                                />
+                                {nextExercise?.gifUrl && (
+                                    <Image
+                                        src={nextExercise.gifUrl}
+                                        alt="Next exercise"
+                                        fill
+                                        className="invisible absolute z-20 size-64 object-cover object-center"
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                        id="next-image"
+                                    />
+                                )}
 
                                 <h2 className="absolute bottom-5 right-5 z-40 text-gymshock-dark-600 font-bold text-lg">
                                     GYM<span className="text-gymshock-primary-500">SHOCK</span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { ExerciseSkeleton } from '@/components/ui/ExerciseSkeleton';
+import { ExerciseSkeleton } from '@/components/ui';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Exercise } from '@/types/exercise';
 import dynamic from 'next/dynamic';

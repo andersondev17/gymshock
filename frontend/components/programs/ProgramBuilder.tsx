@@ -1,23 +1,17 @@
 'use client';
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription, Button, Progress } from '@/components/ui';
 import { useProgramBuilder } from '@/hooks/useProgramBuilder';
 import { AlertCircle, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Link from 'next/link';
-import FrequencySelector from './FrequencySelector';
-import GoalsSelector from './GoalsSelector';
-import LevelSelector from './LevelSelector';
-import ProgramSummary from './ProgramSummary';
-import TimeSelector from './TimeSelector';
+import { FrequencySelector, GoalsSelector, LevelSelector, ProgramSummary, TimeSelector } from './index';
 
-export default function ProgramBuilder() {
+export function ProgramBuilder() {
     const builder = useProgramBuilder();
     const progressValue = (builder.currentStep / 5) * 100;
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <main className="flex flex-col min-h-screen">
             {/* Progress bar */}
             <header className="sticky top-0 z-50 bg-gymshock-dark-800/90 backdrop-blur-xl border-b border-gymshock-dark-700/50">
                 <div className="max-w-6xl mx-auto px-4  flex items-center gap-4">
@@ -52,7 +46,7 @@ export default function ProgramBuilder() {
                 </div>
             </header>
 
-            <main className="flex-grow max-w-6xl mx-auto px-4 py-4 w-full">
+            <section className="flex-grow max-w-6xl mx-auto px-4 py-4 w-full">
                 <header className="text-center space-y-6 mb-12">
                     <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
                         Encuentra tu{' '}
@@ -127,7 +121,7 @@ export default function ProgramBuilder() {
                         />
                     )}
                 </div>
-            </main>
+            </section>
 
             <footer className="sticky bottom-0 z-50 bg-gymshock-dark-800/90 backdrop-blur-xl border-t border-gymshock-dark-700/50">
                 <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
@@ -154,6 +148,6 @@ export default function ProgramBuilder() {
                     )}
                 </div>
             </footer>
-        </div>
+        </main>
     );
 }

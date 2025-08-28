@@ -1,8 +1,6 @@
 'use client';
 
 import { PROGRAM_LEVELS, ProgramLevel } from '@/constants/programs';
-import gsap from 'gsap';
-import { useEffect, useRef } from 'react';
 import LevelCard from './LevelCard';
 
 interface Props {
@@ -11,25 +9,7 @@ interface Props {
     stepNumber: number;
 }
 
-export default function LevelSelector({ selectedLevel, onSelect, stepNumber }: Props) {
-    const cardsRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (cardsRef.current) {
-            const cards = cardsRef.current.querySelectorAll('.level-card');
-            gsap.fromTo(cards,
-                { opacity: 0, y: 20 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.4,
-                    stagger: 0.1,
-                    ease: "power2.out"
-                }
-            );
-        }
-    }, []);
-
+export function LevelSelector({ selectedLevel, onSelect, stepNumber }: Props) {
     return (
         <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6">
             <div className="flex items-center gap-3 mb-6">
@@ -40,10 +20,13 @@ export default function LevelSelector({ selectedLevel, onSelect, stepNumber }: P
                     Seleccione su nivel de experiencia
                 </h2>
             </div>
-            
-            <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {Object.entries(PROGRAM_LEVELS).map(([key, level]) => (
-                    <div key={key} className="level-card">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {Object.entries(PROGRAM_LEVELS).map(([key, level], index) => (
+                    <div
+                        key={key}
+                        className="animate-in fade-in slide-in-from-bottom-5 fill-mode-both"
+                    >
                         <LevelCard
                             levelKey={key as keyof typeof PROGRAM_LEVELS}
                             level={level}

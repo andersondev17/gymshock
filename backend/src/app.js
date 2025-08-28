@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const passport = require('./config/passport');
 const arcjetMiddleware = require('./middleware/arcjet.middleware');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -28,10 +29,11 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.options('*', cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
+
+app.use(cookieParser());
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -41,11 +43,10 @@ app.use(session({
         uri: process.env.MONGODB_URI,
         collection: 'sessions',
     }),
-    name: 'gymshock.sid',
+    name: 'connect.sid',
     proxy: true,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
@@ -57,14 +58,17 @@ app.use(passport.session());
 
 // 3. Middleware Arcjet solo para métodos no-OPTIONS
 app.use('/api', (req, res, next) => {
-    if (req.method === 'OPTIONS' || req.path === '/api/health' || req.path.startsWith('/api/exercises')) return next();
+    if (req.method === 'OPTIONS' || 
+        req.path === '/api/health' || 
+        req.path.startsWith('/api/exercises') || 
+        req.path.startsWith('/api/programs')) return next();
     arcjetMiddleware(req, res, next);
 });
-
 // Rutas
 const { router: authRouter } = require('./routes/authRoutes');
 app.use('/api/auth', authRouter);
 app.use('/api/exercises', require('./routes/exerciseRoutes'));
+app.use('/api/programs', require('./routes/programRoutes'));
 
 // Ruta de salud
 app.get('/api/health', (req, res) => {
@@ -92,7 +96,14 @@ app.use((err, req, res, next) => {
             : err.message
     });
 });
-
+app.use((req, res, next) => {
+    console.log('🔍 Session State:');
+    console.log('- Session ID:', req.sessionID);
+    console.log('- Passport User:', req.session?.passport?.user);
+    console.log('- Authenticated:', req.isAuthenticated());
+    console.log('- req.user:', req.user);
+    next();
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

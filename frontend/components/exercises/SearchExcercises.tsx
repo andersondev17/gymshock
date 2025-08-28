@@ -1,9 +1,7 @@
 // components/SearchExercises.tsx
 'use client';
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription, Button, Input } from "@/components/ui";
 import { useSearchExercises } from '@/hooks/useSearchExercises';
 import { SearchExercisesProps } from '@/types/exercise';
 import { Search } from 'lucide-react';

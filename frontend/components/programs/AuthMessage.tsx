@@ -8,7 +8,7 @@ interface AuthMessageProps {
     onBack?: () => void;
 }
 
-export default function AuthMessage({ onBack }: AuthMessageProps) {
+export function AuthMessage({ onBack }: AuthMessageProps) {
     return (
         <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6">
             <div className="text-center space-y-6">

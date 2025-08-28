@@ -10,7 +10,7 @@ interface Props {
     stepNumber: number;
 }
 
-export default function FrequencySelector({ selectedFrequency, selectedLevel, onSelect, stepNumber }: Props) {
+export function FrequencySelector({ selectedFrequency, selectedLevel, onSelect, stepNumber }: Props) {
     const getRecommendedFrequency = () => {
         if (!selectedLevel) return null;
         return FREQUENCY_OPTIONS.find(opt =>
