@@ -12,14 +12,19 @@ const setCorsHeaders = (res, origin) => {
     if (origin && allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
         res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
     }
 };
 
 const arcjetMiddleware = async (req, res, next) => {
     requestCounter++;
     const origin = req.headers.origin;
-    
+
     setCorsHeaders(res, origin);
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
 
     try {
         const aj = await getArcjetInstance();
@@ -34,7 +39,7 @@ const arcjetMiddleware = async (req, res, next) => {
                 decision = await aj.project(req);
             } catch (innerError) {
                 console.error('❌ Error en project:', innerError.message);
-                return next(); 
+                return next();
             }
         }
 

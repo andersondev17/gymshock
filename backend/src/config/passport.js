@@ -3,6 +3,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
+const mongoose = require('mongoose');
 
 passport.use(new LocalStrategy(
     {
@@ -97,22 +98,29 @@ passport.use(new GoogleStrategy({
 
 // Serializar usuario para guardarlo en la sesión
 passport.serializeUser(function (user, done) {
-    process.nextTick(function () {
+    done(null, user._id); 
+});
+
+passport.deserializeUser(async function (id, done) {
+    try {
+        // Convierte el string a ObjectId si es necesario
+        const userId = typeof id === 'string' ? new mongoose.Types.ObjectId(id) : id;
+        
+        const user = await User.findById(userId).select('-password');
+        if (!user) return done(null, false);
+        
         done(null, {
-            id: user._id,
+            _id: user._id,
             username: user.username,
             email: user.email,
             name: user.name,
             role: user.role,
-            provider: user.provider,
+            provider: user.provider
         });
-    });
-});
-
-passport.deserializeUser(function (sessionUser, done) {
-    process.nextTick(function () {
-        return done(null, sessionUser);
-    });
+    } catch (error) {
+        console.error('❌ Error deserializing user:', error);
+        done(error, null);
+    }
 });
 async function generateUniqueUsername(email) {
     const baseUsername = email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '');

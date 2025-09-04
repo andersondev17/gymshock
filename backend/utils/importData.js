@@ -1,7 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
-const dbConnect = require('../src/database/dbConnect');
+const dbConnect = require('../src/database/dbconnect');
 const Exercise = require('../src/models/Exercise');
 
 const importData = async () => {

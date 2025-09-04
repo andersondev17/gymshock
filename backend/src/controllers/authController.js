@@ -33,9 +33,13 @@ exports.login = (req, res) => {
                 // ✅ Log seguro (sin PII)
                 console.log(`✅ Login success | UserID: ${user._id} | Role: ${user.role}`);
 
+                const debugToken = `session-${req.sessionID}-${Date.now()}`;
+
                 // ✅ Respuesta estandarizada
                 res.json({
                     success: true,
+                    debugToken,
+                    sessionID: req.sessionID,
                     user: sanitizeUser(user)
                 });
             });
@@ -95,9 +99,9 @@ exports.logout = (req, res) => {
     const userEmail = req.user?.email;
     const userRole = req.user?.role;
     const sessionID = req.sessionID;
-    
+
     console.log('🚪 Logout attempt:', { userEmail, userRole, sessionID });
-    
+
     req.logout((err) => {
         if (err) {
             console.error('❌ Logout error:', err);
@@ -106,16 +110,16 @@ exports.logout = (req, res) => {
                 message: 'Error al cerrar sesión'
             });
         }
-        
+
         // ✅ DESTROY SESSION COMPLETELY
         req.session.destroy((err) => {
             if (err) {
                 console.error('❌ Session destroy error:', err);
             }
-            
+
             res.clearCookie('connect.sid');
             console.log('✅ Logout successful:', { userEmail, userRole, sessionID });
-            
+
             res.json({
                 success: true,
                 message: 'Sesión cerrada correctamente'
@@ -131,7 +135,7 @@ exports.getMe = (req, res) => {
             user: null
         });
     }
-    
+
     res.json({
         success: true,
         authenticated: true,
