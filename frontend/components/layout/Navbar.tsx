@@ -1,8 +1,6 @@
 'use client';
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { AnimatedText, Avatar, AvatarFallback, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui';
 import NeuroFlow from '@/components/ux/NeuroFlow';
 import { navItems } from '@/constants/index';
 import { COLOMBIA_FLOW_CONFIG } from '@/constants/onboarding';
@@ -14,7 +12,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import AnimatedText from '../ui/animatedText';
 import MobileNav from './MobileNav';
 import NavLink from './NavLink';
 
@@ -31,15 +28,7 @@ const Navbar = () => {
   useEffect(() => {
     const isCompleted = localStorage.getItem('onboardingCompleted');
     
-    console.log('🔍 Onboarding check:', { 
-        user: !!user, 
-        loading, 
-        completed: isCompleted,
-        userName: user?.name 
-    });
-    
     if (user && !loading && !isCompleted) {
-        console.log('✅ Activating onboarding for:', user.name);
         setOnboarding({
             isOpen: true,
             step: 0,

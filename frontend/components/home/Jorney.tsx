@@ -14,7 +14,6 @@ import AppPreview from './AppPreview';
 
 const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: JourneyProps) => {
     const [currentIndex, setCurrentIndex] = useState(1);
-
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const totalPhotos = 4;
     const nextPhotoRef = useRef<HTMLImageElement>(null);
@@ -31,11 +30,6 @@ const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: Journe
         fetchExercises();
     }, []);
 
-    // 0 % 4 = 0 + 1 => 1
-    // 1 % 4 = 1 + 1 => 2
-    // 2 % 4 = 2 + 1 => 3
-    // 3 % 4 = 3 + 1 => 4
-    // 4 % 4 = 0 + 1 => 1
     const handleMiniPhotoClick = () => {
         setCurrentIndex((prevIndex) => (prevIndex % totalPhotos) + 1);
     };
@@ -66,7 +60,17 @@ const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: Journe
         }
     );
 
-    const getExerciseGif = (index: number) => exercises[index - 1]?.gifUrl || '';
+    // ✅ FIX: Guard clause para evitar src vacío
+    const getExerciseGif = (index: number) => exercises[index - 1]?.gifUrl || null;
+
+    // ✅ Early return si no hay ejercicios
+    if (exercises.length === 0) {
+        return (
+            <main className="relative min-h-screen w-screen overflow-hidden bg-gymshock-dark-900 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500" />
+            </main>
+        );
+    }
 
     return (
         <main
@@ -122,50 +126,53 @@ const Journey = ({ title, subtitle, benefits, ctaPrimary, ctaSecondary }: Journe
                         </div>
                     </section>
 
-                    {/* Exercise Preview  */}
                     <aside className="lg:col-span-7 flex justify-center lg:justify-end">
                         <div className="relative w-[400px] h-[500px] lg:w-[480px] lg:h-[600px]">
                             <div
                                 id="exercise-frame"
                                 className="relative z-10 h-full w-full overflow-hidden rounded-3xl bg-gymshock-dark-700/20 backdrop-blur-sm border border-white/10 shadow-2xl"
                             >
-                                {/* Background Exercise */}
-                                <Image
-                                    src={getExerciseGif(currentIndex === totalPhotos - 1 ? 1 : currentIndex)}
-                                    alt="Background exercise"
-                                    fill
-                                    className="absolute left-0 top-0 object-cover object-center"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                />
+                                {getExerciseGif(currentIndex === totalPhotos - 1 ? 1 : currentIndex) && (
+                                    <Image
+                                        src={getExerciseGif(currentIndex === totalPhotos - 1 ? 1 : currentIndex)!}
+                                        alt="Background exercise"
+                                        fill
+                                        className="absolute left-0 top-0 object-cover object-center"
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                    />
+                                )}
 
-                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 size-64 cursor-pointer overflow-hidden rounded-2xl">
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 size-64 cursor-pointer overflow-hidden rounded-2xl relative">
                                     <AppPreview>
                                         <div
                                             onClick={handleMiniPhotoClick}
-                                            className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100 h-full w-full"
+                                            className="origin-center scale-50 opacity-0 transition-all duration-500 ease-in hover:scale-100 hover:opacity-100 h-full w-full relative"
                                         >
-                                            <Image
-                                                ref={nextPhotoRef}
-                                                src={getExerciseGif((currentIndex % totalPhotos) + 1)}
-                                                alt="Next exercise preview"
-                                                fill
-                                                className="origin-center scale-150 object-cover object-center rounded-lg"
-                                                sizes="(max-width: 768px) 100vw, 50vw"
-                                                id="current-image"
-                                            />
+                                            {getExerciseGif((currentIndex % totalPhotos) + 1) && (
+                                                <Image
+                                                    ref={nextPhotoRef}
+                                                    src={getExerciseGif((currentIndex % totalPhotos) + 1)!}
+                                                    alt="Next exercise preview"
+                                                    fill
+                                                    className="origin-center scale-150 object-cover object-center rounded-lg"
+                                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                                    id="current-image"
+                                                />
+                                            )}
                                         </div>
                                     </AppPreview>
                                 </div>
 
-                                {/* Next Exercise Hidden */}
-                                <Image
-                                    src={getExerciseGif(currentIndex)}
-                                    alt="Next exercise"
-                                    fill
-                                    className="invisible absolute z-20 size-64 object-cover object-center"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                    id="next-image"
-                                />
+                                {getExerciseGif(currentIndex) && (
+                                    <Image
+                                        src={getExerciseGif(currentIndex)!}
+                                        alt="Next exercise"
+                                        fill
+                                        className="invisible absolute z-20 size-64 object-cover object-center"
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                        id="next-image"
+                                    />
+                                )}
 
                                 <h2 className="absolute bottom-5 right-5 z-40 text-gymshock-dark-600 font-bold text-lg">
                                     GYM<span className="text-gymshock-primary-500">SHOCK</span>

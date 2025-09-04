@@ -7,7 +7,7 @@ interface PaginationControlsProps {
     maxPageButtons?: number;
 }
 
-const PaginationControls = ({ currentPage, totalPages, onPageChange, maxPageButtons = 5 }: PaginationControlsProps) => {
+export const PaginationControls = ({ currentPage, totalPages, onPageChange, maxPageButtons = 5 }: PaginationControlsProps) => {
 
     // Logic to determine which page buttons to show
     const getPageButtons = () => {
@@ -109,5 +109,3 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange, maxPageButt
         </div>
     );
 };
-
-export default PaginationControls;

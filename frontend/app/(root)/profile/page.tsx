@@ -1,9 +1,6 @@
 'use client';
-import { GoalTag, NoProfileState, ProfileCard, RoleBadge } from '@/components/profile';
-import { ProfileStatCard } from '@/components/profile/StatCard';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { LoadingBar } from '@/components/ui/LoadingBar';
+import { GoalTag, NoProfileState, ProfileCard, ProfileStatCard, RoleBadge } from '@/components/profile';
+import { Avatar, AvatarFallback, Button, LoadingBar } from '@/components/ui';
 import { FREQUENCY_OPTIONS, PROGRAM_LEVELS, TIME_OPTIONS } from '@/constants/programs';
 import { useAuth } from '@/context/AuthProvider';
 import { getGreeting, getInitials } from '@/lib/utils';

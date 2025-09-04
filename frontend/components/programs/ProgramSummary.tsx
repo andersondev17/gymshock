@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthProvider';
 import { useProgramActions } from '@/hooks/useProgramActions';
 import { Calendar, Clock, Target, Zap } from 'lucide-react';
 import { useState } from 'react';
-import AuthMessage from './AuthMessage';
+import { AuthMessage } from './index';
 
 interface Props {
   level: keyof typeof PROGRAM_LEVELS;
@@ -17,7 +17,7 @@ interface Props {
   isLoading?: boolean;
 }
 
-export default function ProgramSummary({ 
+export function ProgramSummary({ 
   level, 
   goals, 
   time, 
@@ -61,18 +61,18 @@ export default function ProgramSummary({
   }
 
   return (
-    <div className="bg-gymshock-dark-800 backdrop-blur-md rounded-xl border border-gymshock-dark-700 p-6">
-      <div className="text-center space-y-6">
-        <div>
+    <main className="bg-gymshock-dark-800 backdrop-blur-md rounded-xl border border-gymshock-dark-700 p-6">
+      <article className="text-center space-y-6">
+        <header>
           <h3 className="text-2xl font-bold text-white mb-2">
             ¡Tu programa está listo! 🎯
           </h3>
           <p className="text-gymshock-dark-400 text-sm mb-4">
             Hemos diseñado el plan perfecto basado en tu perfil
           </p>
-        </div>
+        </header>
 
-        <div className="grid md:grid-cols-4 gap-4">
+        <section className="grid md:grid-cols-4 gap-4">
           <div className="bg-gymshock-dark-800 backdrop-blur-md border border-gymshock-dark-700 p-4 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <Zap className="h-5 w-5 text-gymshock-primary-400" />
@@ -108,7 +108,7 @@ export default function ProgramSummary({
               {frequencyData?.label}
             </p>
           </div>
-        </div>
+        </section>
 
         <Button
           size="lg"
@@ -134,7 +134,7 @@ export default function ProgramSummary({
             : 'Inicia sesión para guardar y acceder a tu programa personalizado'
           }
         </p>
-      </div>
-    </div>
+      </article>
+    </main>
   );
 }

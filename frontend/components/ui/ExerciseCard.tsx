@@ -6,19 +6,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
-const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
+export const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
     const [imageError, setImageError] = useState(false);
     const fallbackImage = "/assets/images/exercise-placeholder.png";
 
     return (
-        <div className="w-full h-full">
+        <main className="w-full h-full">
             <Link
                 href={`/exercise/${exercise.id}`}
                 className="group block h-full w-full"
             >
-                <div className="bg-gymshock-dark-800/40 backdrop-blur-xl overflow-hidden shadow-gymshock-elevated hover:shadow-gymshock-glow transition-all duration-700 h-full flex flex-col rounded-xl border border-gymshock-dark-700/30 hover:border-gymshock-primary-500/50 hover:scale-[1.02] hover:bg-gymshock-dark-800/60">
+                <article className="bg-gymshock-dark-800/40 backdrop-blur-xl overflow-hidden shadow-gymshock-elevated hover:shadow-gymshock-glow transition-all duration-700 h-full flex flex-col rounded-xl border border-gymshock-dark-700/30 hover:border-gymshock-primary-500/50 hover:scale-[1.02] hover:bg-gymshock-dark-800/60">
                     {/* Image container */}
-                    <div className="relative aspect-square w-full overflow-hidden rounded-t-xl">
+                    <section className="relative aspect-square w-full overflow-hidden rounded-t-xl">
                         {!imageError ? (
                             <>
                                 <Image
@@ -50,10 +50,10 @@ const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
                                 View Exercise
                             </div>
                         </div>
-                    </div>
+                    </section>
                     
                     {/* Content */}
-                    <div className="p-5 flex-1 flex flex-col">
+                    <aside className="p-5 flex-1 flex flex-col">
                         <div className="flex flex-wrap gap-2 mb-4">
                             <Badge className="bg-gymshock-primary-600/20 text-gymshock-primary-300 hover:bg-gymshock-primary-600/30 border border-gymshock-primary-600/30 font-medium backdrop-blur-sm">
                                 {exercise.bodyPart}
@@ -77,11 +77,9 @@ const ExerciseCard = ({ exercise }: ExerciseCardProps) => {
                             </div>
                             <span className="ml-1.5 font-medium text-gymshock-dark-200">{exercise.equipment}</span>
                         </div>
-                    </div>
-                </div>
+                    </aside>
+                </article>
             </Link>
-        </div>
+        </main>
     );
 };
-
-export default ExerciseCard;
